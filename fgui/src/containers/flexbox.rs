@@ -7,6 +7,7 @@ type AreaAllocator = Box<dyn FnMut((usize, usize), (usize, usize)) -> WidgetSize
 pub struct Flexbox<Backend: BackendTrait> {
     widgets: Vec<Box<dyn Widget<Backend>>>,
     widget_sizes: Vec<WidgetSize>,
+    widget_subareas: Vec<Rect>,
     align_content: AlignContent,
     align_items: AlignItems,
     flex_wrap: FlexWrap,
@@ -146,6 +147,7 @@ impl<Backend: BackendTrait> Flexbox<Backend> {
         Flexbox {
             widgets: Vec::new(),
             widget_sizes: Vec::new(),
+            widget_subareas: Vec::new(),
             align_content: AlignContent::Normal,
             align_items: AlignItems::Stretch,
             flex_wrap: FlexWrap::NoWrap,

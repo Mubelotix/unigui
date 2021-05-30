@@ -20,4 +20,11 @@ impl<'a, Backend: BackendTrait> Area<'a, Backend> {
     pub fn height(&self) -> isize {
         self.rect.bottom_right.1 - self.rect.top_left.1
     }
+
+    pub fn subarea(&'a mut self, rect: Rect) -> Area<'a, Backend> {
+        Area {
+            rect: self.rect.to_owned() + rect,
+            backend: self.backend
+        }
+    }
 }
