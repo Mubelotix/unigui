@@ -15,6 +15,14 @@ impl WidgetSize {
         self.width = width.clamp(self.min_width, self.max_width);
         self.height = height.clamp(self.min_height, self.max_height);
     }
+
+    pub fn set_height(&mut self, height: usize) {
+        self.height = height.clamp(self.min_height, self.max_height);
+    }
+
+    pub fn set_width(&mut self, width: usize) {
+        self.width = width.clamp(self.min_width, self.max_width);
+    }
 }
 
 pub trait Widget<Backend: BackendTrait> {

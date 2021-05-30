@@ -49,8 +49,10 @@ impl<Backend: BackendTrait> Widget<Backend> for Flexbox<Backend> {
 
         self.widget_sizes.clear();
         for widget in &mut self.widgets {
-            self.widget_sizes
-                .push(widget.allocate_area(screen_size, (size_restriction.max_width, size_restriction.max_height)));
+            self.widget_sizes.push(widget.allocate_area(
+                screen_size,
+                (size_restriction.max_width, size_restriction.max_height),
+            ));
         }
 
         match self.flex_wrap {
@@ -71,7 +73,8 @@ impl<Backend: BackendTrait> Flexbox<Backend> {
     fn allocate_area_no_wrap(&mut self, mut size_restriction: WidgetSize) -> WidgetSize {
         let mut flexbox_width = 0;
         let mut flexbox_height = 0;
-        for size in &self.widget_sizes {
+        for size in &mut self.widget_sizes {
+            size.set_height(std::cmp::min(size.height, size_restriction.max_height));
             flexbox_width += size.width;
             if size.height > flexbox_height {
                 flexbox_height = size.height;
@@ -104,12 +107,22 @@ impl<Backend: BackendTrait> Flexbox<Backend> {
             // Recaculate the size
             flexbox_width = 0;
             flexbox_height = 0;
-            for size in &self.widget_sizes {
+            for size in &mut self.widget_sizes {
+                size.set_height(std::cmp::min(size.height, size_restriction.max_height));
                 flexbox_width += size.width;
                 if size.height > flexbox_height {
                     flexbox_height = size.height;
                 }
             }
+        }
+
+        // Allocate subareas for widgets
+        self.widget_subareas.clear();
+        let mut x = 0;
+        for size in &self.widget_sizes {
+            self.widget_subareas
+                .push(Rect::sized(x, 0, size.width, size.height));
+            x += size.width as isize;
         }
 
         size_restriction.set_size(flexbox_width, flexbox_height);
@@ -120,9 +133,13 @@ impl<Backend: BackendTrait> Flexbox<Backend> {
         let mut flexbox_line_size = vec![(0, 0)];
         for size in &mut self.widget_sizes {
             let last_line_size = flexbox_line_size.last_mut().unwrap(); // TODO: unwrap_unchecked
-            let height = size.height.clamp(size_restriction.min_height, size_restriction.max_height);
+            let height = size
+                .height
+                .clamp(size_restriction.min_height, size_restriction.max_height);
             if last_line_size.0 + size.width > size_restriction.max_width {
-                let width = size.width.clamp(size_restriction.min_width, size_restriction.max_width);
+                let width = size
+                    .width
+                    .clamp(size_restriction.min_width, size_restriction.max_width);
                 flexbox_line_size.push((width, height));
             } else {
                 last_line_size.0 += size.width;
@@ -239,7 +256,7 @@ mod tests {
     }
 
     #[test]
-    fn test_flexbox_size_no_wrap() {
+    fn test_flexbox_no_wrap() {
         let mut flexbox = Flexbox::<TestBackend>::new();
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
@@ -258,6 +275,23 @@ mod tests {
                 max_height: 100,
             }
         );
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0, 0),
+                    bottom_right: (50, 20)
+                },
+                Rect {
+                    top_left: (50, 0),
+                    bottom_right: (100, 20)
+                },
+                Rect {
+                    top_left: (100, 0),
+                    bottom_right: (150, 20)
+                }
+            ]
+        );
 
         // Resize elements
         let size = flexbox.allocate_area((1000, 1000), (100, 15));
@@ -271,6 +305,23 @@ mod tests {
                 height: 15,
                 max_height: 15,
             }
+        );
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0, 0),
+                    bottom_right: (40, 15)
+                },
+                Rect {
+                    top_left: (40, 0),
+                    bottom_right: (80, 15)
+                },
+                Rect {
+                    top_left: (80, 0),
+                    bottom_right: (120, 15)
+                }
+            ]
         );
 
         // Try to overflow the container of the flexbox
