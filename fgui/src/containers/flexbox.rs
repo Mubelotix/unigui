@@ -70,7 +70,6 @@ impl<Backend: BackendTrait> Flexbox<Backend> {
     fn allocate_area_no_wrap(&mut self, mut size_restriction: WidgetSize) -> WidgetSize {
         let mut flexbox_width = 0;
         let mut flexbox_height = 0;
-
         for size in &self.widget_sizes {
             flexbox_width += size.width;
             if size.height > flexbox_height {
@@ -116,8 +115,29 @@ impl<Backend: BackendTrait> Flexbox<Backend> {
         size_restriction
     }
 
-    fn allocate_area_wrap(&mut self, size_restriction: WidgetSize) -> WidgetSize {
-        todo!()
+    fn allocate_area_wrap(&mut self, mut size_restriction: WidgetSize) -> WidgetSize {
+        let mut flexbox_line_size = vec![(0, 0)];
+        for size in &mut self.widget_sizes {
+            let last_line_size = flexbox_line_size.last_mut().unwrap(); // TODO: unwrap_unchecked
+            let height = size.height.clamp(size_restriction.min_height, size_restriction.max_height);
+            if last_line_size.0 + size.width > size_restriction.max_width {
+                let width = size.width.clamp(size_restriction.min_width, size_restriction.max_width);
+                flexbox_line_size.push((width, height));
+            } else {
+                last_line_size.0 += size.width;
+                last_line_size.1 = std::cmp::max(last_line_size.1, height);
+            }
+        }
+
+        let mut flexbox_width = 0;
+        let mut flexbox_height = 0;
+        for line_size in flexbox_line_size {
+            flexbox_width = std::cmp::max(flexbox_width, line_size.0);
+            flexbox_height += line_size.1;
+        }
+
+        size_restriction.set_size(flexbox_width, flexbox_height);
+        size_restriction
     }
 }
 
@@ -223,6 +243,7 @@ mod tests {
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
 
+        // Simple behavior
         let size = flexbox.allocate_area((1000, 1000), (200, 100));
         assert_eq!(
             size,
@@ -236,6 +257,7 @@ mod tests {
             }
         );
 
+        // Resize elements
         let size = flexbox.allocate_area((1000, 1000), (100, 15));
         assert_eq!(
             size,
@@ -249,6 +271,21 @@ mod tests {
             }
         );
 
+        // Try to overflow the container of the flexbox
+        let size = flexbox.allocate_area((1000, 1000), (10, 10));
+        assert_eq!(
+            size,
+            WidgetSize {
+                min_width: 0,
+                width: 10,
+                max_width: 10,
+                min_height: 0,
+                height: 10,
+                max_height: 10,
+            }
+        );
+
+        // Test with custom allocator
         flexbox.set_area_allocator(Some(Box::new(|_screen_size, _container_size| WidgetSize {
             min_width: 30,
             width: 100,
@@ -269,24 +306,136 @@ mod tests {
                 max_height: 20,
             }
         );
+
+        // Try to underflow the allocated box
+        flexbox.set_area_allocator(Some(Box::new(|_screen_size, _container_size| WidgetSize {
+            min_width: 250,
+            width: 250,
+            max_width: 300,
+            min_height: 50,
+            height: 50,
+            max_height: 100,
+        })));
+        let size = flexbox.allocate_area((1000, 1000), (250, 100));
+        assert_eq!(
+            size,
+            WidgetSize {
+                min_width: 250,
+                width: 250,
+                max_width: 300,
+                min_height: 50,
+                height: 50,
+                max_height: 100,
+            }
+        );
     }
 
     #[test]
     fn test_flexbox_size_wrap() {
-        /*let mut flexbox = Flexbox::<TestBackend>::new();
+        let mut flexbox = Flexbox::<TestBackend>::new();
         flexbox.set_flex_wrap(FlexWrap::Wrap);
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
 
-        let size = flexbox.allocate_area((100, 100), (100, 100));
+        // Simple behavior
+        let size = flexbox.allocate_area((1000, 1000), (200, 100));
         assert_eq!(
             size,
-            WidgetSize::Fixed {
-                min_width
-                width: 100,
-                height: 40
+            WidgetSize {
+                min_width: 0,
+                width: 150,
+                max_width: 200,
+                min_height: 0,
+                height: 20,
+                max_height: 100,
             }
-        )*/
+        );
+
+        // Test wrapping
+        let size = flexbox.allocate_area((1000, 1000), (100, 100));
+        assert_eq!(
+            size,
+            WidgetSize {
+                min_width: 0,
+                width: 100,
+                max_width: 100,
+                min_height: 0,
+                height: 40,
+                max_height: 100,
+            }
+        );
+
+        // Test wrapping + resizing
+        let size = flexbox.allocate_area((1000, 1000), (45, 100));
+        assert_eq!(
+            size,
+            WidgetSize {
+                min_width: 0,
+                width: 45,
+                max_width: 45,
+                min_height: 0,
+                height: 60,
+                max_height: 100,
+            }
+        );
+
+        // Try to overflow
+        let size = flexbox.allocate_area((1000, 1000), (10, 10));
+        assert_eq!(
+            size,
+            WidgetSize {
+                min_width: 0,
+                width: 10,
+                max_width: 10,
+                min_height: 0,
+                height: 10,
+                max_height: 10,
+            }
+        );
+
+        // Test with custom allocator
+        flexbox.set_area_allocator(Some(Box::new(|_screen_size, _container_size| WidgetSize {
+            min_width: 30,
+            width: 100,
+            max_width: 50,
+            min_height: 10,
+            height: 10,
+            max_height: 100,
+        })));
+        let size = flexbox.allocate_area((1000, 1000), (200, 100));
+        assert_eq!(
+            size,
+            WidgetSize {
+                min_width: 30,
+                width: 50,
+                max_width: 50,
+                min_height: 10,
+                height: 60,
+                max_height: 100,
+            }
+        );
+
+        // Try to underflow the allocated box
+        flexbox.set_area_allocator(Some(Box::new(|_screen_size, _container_size| WidgetSize {
+            min_width: 150,
+            width: 150,
+            max_width: 200,
+            min_height: 80,
+            height: 80,
+            max_height: 100,
+        })));
+        let size = flexbox.allocate_area((1000, 1000), (200, 100));
+        assert_eq!(
+            size,
+            WidgetSize {
+                min_width: 150,
+                width: 150,
+                max_width: 200,
+                min_height: 80,
+                height: 80,
+                max_height: 100,
+            }
+        );
     }
 }
