@@ -1,15 +1,23 @@
 use crate::*;
 
 pub struct Area<'a, Backend: BackendTrait> {
-    pub area: Rect, // TODO visibility
+    pub rect: Rect, // TODO visibility
     pub backend: &'a mut Backend,
 }
 
 impl<'a, Backend: BackendTrait> Area<'a, Backend> {
-    pub fn new(area: Rect, backend: &'a mut Backend) -> Area<'a, Backend> {
+    pub fn new(rect: Rect, backend: &'a mut Backend) -> Area<'a, Backend> {
         Area {
-            area,
+            rect,
             backend,
         }
+    }
+
+    pub fn width(&self) -> isize {
+        self.rect.bottom_right.0 - self.rect.top_left.0
+    }
+
+    pub fn height(&self) -> isize {
+        self.rect.bottom_right.1 - self.rect.top_left.1
     }
 }
