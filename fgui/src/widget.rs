@@ -12,15 +12,25 @@ pub struct WidgetSize {
 
 impl WidgetSize {
     pub fn set_size(&mut self, width: usize, height: usize) {
+        self.set_width(width);
+        self.set_height(height);
+    }
+
+    pub fn set_width(&mut self, width: usize) {
         self.width = width.clamp(self.min_width, self.max_width);
-        self.height = height.clamp(self.min_height, self.max_height);
     }
 
     pub fn set_height(&mut self, height: usize) {
         self.height = height.clamp(self.min_height, self.max_height);
     }
 
-    pub fn set_width(&mut self, width: usize) {
+    pub fn fit_height(&mut self, restrictions: &WidgetSize) {
+        let height = self.height.clamp(restrictions.min_height, restrictions.max_height);
+        self.height = height.clamp(self.min_height, self.max_height);
+    }
+
+    pub fn fit_width(&mut self, restrictions: &WidgetSize) {
+        let width = self.width.clamp(restrictions.min_width, restrictions.max_width);
         self.width = width.clamp(self.min_width, self.max_width);
     }
 }
