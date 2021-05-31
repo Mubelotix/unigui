@@ -21,9 +21,9 @@ impl<'a, Backend: BackendTrait> Area<'a, Backend> {
         self.rect.bottom_right.1 - self.rect.top_left.1
     }
 
-    pub fn subarea(&'a mut self, rect: Rect) -> Area<'a, Backend> {
+    pub fn subarea(&mut self, rect: Rect) -> Area<Backend> {
         Area {
-            rect: self.rect.to_owned() + rect,
+            rect: self.rect + rect,
             backend: self.backend
         }
     }

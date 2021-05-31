@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Copy)]
 pub struct Rect {
     pub top_left: (isize, isize),
     pub bottom_right: (isize, isize),

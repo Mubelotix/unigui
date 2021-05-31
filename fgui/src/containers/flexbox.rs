@@ -176,8 +176,16 @@ impl<Backend: BackendTrait> Widget<Backend> for Flexbox<Backend> {
         container
     }
 
-    fn render(&self, _area: Area<Backend>) {
-        todo!()
+    fn render<'a>(&'a self, mut area: Area<'a, Backend>) {
+        debug_assert_eq!(self.widgets.len(), self.widget_subareas.len());
+        
+        for i in 0..self.widgets.len() {
+            // Todo: go unsafe
+            let widget = &self.widgets[i];
+            let subarea = self.widget_subareas[i];
+            let area = area.subarea(subarea);
+            widget.render(area);
+        }
     }
 }
 
