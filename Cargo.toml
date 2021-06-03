@@ -1,2 +1,2 @@
 [workspace]
-members = ["fgui", "backends/fgui-cli", "backends/fgui-wgpu"]
+members = ["fgui", "backends/cli", "backends/wgpu"]
