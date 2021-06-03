@@ -1,7 +1,5 @@
 use crate::*;
 
 pub trait Backend: Sized {
-    fn init() -> Self;
-
-    fn clear(&mut self) -> Area<Self>;
+    fn run(app: impl App<Self>) -> !;
 }

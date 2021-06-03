@@ -16,12 +16,13 @@ pub struct Flexbox<Backend: BackendTrait> {
 }
 
 impl<Backend: BackendTrait> Widget<Backend> for Flexbox<Backend> {
-    fn accept_render(&mut self) -> bool {
+    fn accept_render(&self) -> bool {
         if self.must_render {
-            self.must_render = false;
-            return true;
+            todo!();
+            // self.must_render = false;
+            // return true;
         }
-        for widget in &mut self.widgets {
+        for widget in &self.widgets {
             if widget.accept_render() {
                 return true;
             }
@@ -250,19 +251,15 @@ mod tests {
     struct TestBackend {}
 
     impl Backend for TestBackend {
-        fn init() -> Self {
-            TestBackend {}
-        }
-
-        fn clear(&mut self) -> Area<Self> {
-            Area::new(Rect::sized(0, 0, 1000, 1000), self)
+        fn run(_app: impl App<Self>) -> ! {
+            todo!()
         }
     }
 
     struct Button {}
 
     impl Widget<TestBackend> for Button {
-        fn accept_render(&mut self) -> bool {
+        fn accept_render(&self) -> bool {
             true
         }
 

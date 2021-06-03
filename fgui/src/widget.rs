@@ -42,7 +42,7 @@ pub trait Widget<Backend: BackendTrait> {
     /// This function will be called at each frame to ask if render is required.
     /// If the widget returns `true`, then it will be rendered. The next function to be called will be [Widget::allocate_area].  
     /// If the widget returns `false`, rendering of this object will be cancelled.
-    fn accept_render(&mut self) -> bool; // Todo: they should not modify their state here as it may not be called
+    fn accept_render(&self) -> bool;
 
     /// This function will usually be called after [Widget::accept_render], but may be called independently (on window resize for example).
     /// 
