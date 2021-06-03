@@ -13,5 +13,6 @@ uniform Uniforms {
 
 void main() {
     v_color = a_color;
-    gl_Position = vec4(a_position, 0.0, 1.0);
+    vec2 p = ((2.0 / vec2(screen_width, screen_height)) * a_position - 1.0) * vec2(1.0, -1.0);
+    gl_Position = vec4(p, 0.0, 1.0);
 }

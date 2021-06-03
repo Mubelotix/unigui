@@ -36,15 +36,15 @@ impl Vertex {
 
 const VERTICES: &[Vertex] = &[
     Vertex {
-        position: [0.0, 0.5],
+        position: [50.0, 100.0],
         color: [1.0, 0.0, 0.0, 1.0],
     },
     Vertex {
-        position: [-0.5, -0.5],
+        position: [0.0, 0.0],
         color: [0.0, 1.0, 0.0, 1.0],
     },
     Vertex {
-        position: [0.5, -0.5],
+        position: [100.0, 0.0],
         color: [0.0, 0.0, 1.0, 1.0],
     },
 ];
@@ -212,6 +212,11 @@ impl WgpuBackend {
         self.size = new_size;
         self.sc_desc.width = new_size.width;
         self.sc_desc.height = new_size.height;
+
+        self.uniforms.screen_width = new_size.width as f32;
+        self.uniforms.screen_height = new_size.height as f32;
+        self.queue.write_buffer(&self.uniform_buffer, 0, bytemuck::cast_slice(&[self.uniforms]));
+
         self.swap_chain = self.device.create_swap_chain(&self.surface, &self.sc_desc);
     }
 
