@@ -7,10 +7,7 @@ pub struct Area<'a> {
 
 impl<'a> Area<'a> {
     pub fn new(rect: Rect, backend: &'a mut WgpuBackend) -> Area<'a> {
-        Area {
-            rect,
-            backend,
-        }
+        Area { rect, backend }
     }
 
     pub fn width(&self) -> f32 {
@@ -24,10 +21,16 @@ impl<'a> Area<'a> {
     pub fn subarea(&mut self, rect: Rect) -> Area {
         Area {
             rect: Rect {
-                top_left: (self.rect.top_left.0 + rect.top_left.0, self.rect.top_left.1 + rect.top_left.1),
-                bottom_right: (self.rect.top_left.0 + rect.bottom_right.0, self.rect.top_left.1 + rect.bottom_right.1),
+                top_left: (
+                    self.rect.top_left.0 + rect.top_left.0,
+                    self.rect.top_left.1 + rect.top_left.1,
+                ),
+                bottom_right: (
+                    self.rect.top_left.0 + rect.bottom_right.0,
+                    self.rect.top_left.1 + rect.bottom_right.1,
+                ),
             },
-            backend: self.backend
+            backend: self.backend,
         }
     }
 }
@@ -53,31 +56,37 @@ mod tests {
                 top_left: (0.0, 0.0),
                 bottom_right: (1920.0, 1080.0),
             },
-            backend: unsafe {std::mem::MaybeUninit::uninit().assume_init()},
+            backend: unsafe { std::mem::MaybeUninit::uninit().assume_init() },
         };
         let subarea = area.subarea(Rect {
             top_left: (10.0, 10.0),
             bottom_right: (20.0, 20.0),
         });
-        assert_eq!(subarea.rect, Rect {
-            top_left: (10.0, 10.0),
-            bottom_right: (20.0, 20.0),
-        });
+        assert_eq!(
+            subarea.rect,
+            Rect {
+                top_left: (10.0, 10.0),
+                bottom_right: (20.0, 20.0),
+            }
+        );
 
         let mut area = Area {
             rect: Rect {
                 top_left: (10.0, 10.0),
                 bottom_right: (1920.0, 1080.0),
             },
-            backend: unsafe {std::mem::MaybeUninit::uninit().assume_init()},
+            backend: unsafe { std::mem::MaybeUninit::uninit().assume_init() },
         };
         let subarea = area.subarea(Rect {
             top_left: (10.0, 10.0),
             bottom_right: (20.0, 20.0),
         });
-        assert_eq!(subarea.rect, Rect {
-            top_left: (20.0, 20.0),
-            bottom_right: (30.0, 30.0),
-        });
+        assert_eq!(
+            subarea.rect,
+            Rect {
+                top_left: (20.0, 20.0),
+                bottom_right: (30.0, 30.0),
+            }
+        );
     }
 }

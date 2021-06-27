@@ -56,8 +56,10 @@ impl Widget for Flexbox {
             FlexWrap::NoWrap => {
                 let (mut row, mut row_width, mut row_height) = (Vec::new(), 0.0, 0.0);
                 for widget in &mut self.widgets {
-                    let widget_size =
-                        widget.allocate_area(screen, (container.max_width as usize, container.max_height as usize));
+                    let widget_size = widget.allocate_area(
+                        screen,
+                        (container.max_width as usize, container.max_height as usize),
+                    );
                     row_width += widget_size.width;
                     row_height = max(row_height, widget_size.height);
                     row.push(widget_size);
@@ -67,8 +69,10 @@ impl Widget for Flexbox {
             FlexWrap::Wrap => {
                 let (mut row, mut row_width, mut row_height) = (Vec::new(), 0.0, 0.0);
                 for widget in &mut self.widgets {
-                    let widget_size =
-                        widget.allocate_area(screen, (container.max_width as usize, container.max_height as usize));
+                    let widget_size = widget.allocate_area(
+                        screen,
+                        (container.max_width as usize, container.max_height as usize),
+                    );
 
                     if row_width + widget_size.width > container.max_width {
                         rows.push((row, row_width, row_height));
@@ -161,12 +165,8 @@ impl Widget for Flexbox {
         self.widget_subareas.clear();
         for (row, _, row_height) in &rows {
             for widget in row {
-                self.widget_subareas.push(Rect::sized(
-                    x,
-                    y,
-                    widget.width,
-                    widget.height,
-                ));
+                self.widget_subareas
+                    .push(Rect::sized(x, y, widget.width, widget.height));
                 x += widget.width;
             }
             y += row_height;
@@ -179,7 +179,7 @@ impl Widget for Flexbox {
 
     fn render<'a>(&'a self, mut area: Area<'a>) {
         debug_assert_eq!(self.widgets.len(), self.widget_subareas.len());
-        
+
         for i in 0..self.widgets.len() {
             // Todo: go unsafe
             let widget = &self.widgets[i];
@@ -202,13 +202,27 @@ impl std::fmt::Debug for Flexbox {
         }
 
         f.debug_struct("Flexbox")
-            .field("widgets", &DString { s: format!("{} widgets", self.widgets.len()) })
+            .field(
+                "widgets",
+                &DString {
+                    s: format!("{} widgets", self.widgets.len()),
+                },
+            )
             .field("widget_subareas", &self.widget_subareas)
             .field("align_content", &self.align_content)
             .field("align_items", &self.align_items)
             .field("flex_wrap", &self.flex_wrap)
             .field("justify_content", &self.justify_content)
-            .field("area_allocator", &DString { s: if self.area_allocator.is_some() {"Some(function)".to_string()} else {"None".to_string()} })
+            .field(
+                "area_allocator",
+                &DString {
+                    s: if self.area_allocator.is_some() {
+                        "Some(function)".to_string()
+                    } else {
+                        "None".to_string()
+                    },
+                },
+            )
             .field("must_render", &self.must_render)
             .finish()
     }

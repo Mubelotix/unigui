@@ -44,7 +44,7 @@ pub enum FlexWrap {
 /// Think of it as the [`JustifyContent`] version for the cross-axis (perpendicular to the main-axis).
 ///
 /// <img src="https://css-tricks.com/wp-content/uploads/2018/10/align-items.svg" alt="demonstration of differnet alignment options, like all boxes stuck to the top of a flex parent, the bottom, stretched out, or along a baseline" width="50%"/>
-/// 
+///
 /// Baseline is not supported yet.
 #[derive(Debug)]
 pub enum AlignItems {

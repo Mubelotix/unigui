@@ -9,7 +9,7 @@ impl Rect {
         // check width (must be positive)
         Rect {
             top_left: (x, y),
-            bottom_right: (x+width, y+height),
+            bottom_right: (x + width, y + height),
         }
     }
 }

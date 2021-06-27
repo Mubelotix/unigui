@@ -25,12 +25,16 @@ impl WidgetSize {
     }
 
     pub fn fit_height(&mut self, restrictions: &WidgetSize) {
-        let height = self.height.clamp(restrictions.min_height, restrictions.max_height);
+        let height = self
+            .height
+            .clamp(restrictions.min_height, restrictions.max_height);
         self.height = height.clamp(self.min_height, self.max_height);
     }
 
     pub fn fit_width(&mut self, restrictions: &WidgetSize) {
-        let width = self.width.clamp(restrictions.min_width, restrictions.max_width);
+        let width = self
+            .width
+            .clamp(restrictions.min_width, restrictions.max_width);
         self.width = width.clamp(self.min_width, self.max_width);
     }
 }
@@ -46,7 +50,11 @@ pub trait Widget {
     ///   
     /// The container of the widget will then choose the final size and placement of the widget.  
     /// [Widget::render] will always be called after this.
-    fn allocate_area(&mut self, screen_size: (usize, usize), container_size: (usize, usize)) -> WidgetSize;
+    fn allocate_area(
+        &mut self,
+        screen_size: (usize, usize),
+        container_size: (usize, usize),
+    ) -> WidgetSize;
 
     /// This function will always be called after [Widget::allocate_area].  
     /// The widget should consider that it owns the passed [Area] of the screen.

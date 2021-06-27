@@ -42,7 +42,10 @@ pub fn run<App: crate::app::App + 'static>(mut app: App) -> ! {
         },
         Event::RedrawRequested(_) => {
             app.update();
-            app.allocate_area((window_size.width as usize, window_size.height as usize), (window_size.width as usize, window_size.height as usize));
+            app.allocate_area(
+                (window_size.width as usize, window_size.height as usize),
+                (window_size.width as usize, window_size.height as usize),
+            );
             app.render(Area::new(Rect::sized(0.0, 0.0, 1920.0, 1080.0), &mut state));
 
             state.update();

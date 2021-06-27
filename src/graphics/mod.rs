@@ -86,8 +86,10 @@ impl WgpuBackend {
         };
         let swap_chain = device.create_swap_chain(&surface, &sc_desc);
 
-        let vs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.vert.spv"));
-        let fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.frag.spv"));
+        let vs_module =
+            device.create_shader_module(&wgpu::include_spirv!("shaders/shader.vert.spv"));
+        let fs_module =
+            device.create_shader_module(&wgpu::include_spirv!("shaders/shader.frag.spv"));
 
         let uniforms = Uniforms {
             screen_width: window.inner_size().width as f32,
@@ -198,13 +200,18 @@ impl WgpuBackend {
 
         self.uniforms.screen_width = new_size.width as f32;
         self.uniforms.screen_height = new_size.height as f32;
-        self.queue.write_buffer(&self.uniform_buffer, 0, bytemuck::cast_slice(&[self.uniforms]));
+        self.queue.write_buffer(
+            &self.uniform_buffer,
+            0,
+            bytemuck::cast_slice(&[self.uniforms]),
+        );
 
         self.swap_chain = self.device.create_swap_chain(&self.surface, &self.sc_desc);
     }
 
     pub(crate) fn update(&mut self) {
-        self.queue.write_buffer(&self.vertex_buffer, 0, bytemuck::cast_slice(&self.vertices));
+        self.queue
+            .write_buffer(&self.vertex_buffer, 0, bytemuck::cast_slice(&self.vertices));
     }
 
     pub fn add_vertex(&mut self, vertex: Vertex) {
