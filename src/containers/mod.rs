@@ -1,11 +1,14 @@
 pub mod flexbox;
 
+pub use flexbox::Flexbox;
+
 /// This defines the alignment along the main axis.
 ///
 /// It helps distribute extra free space leftover when either all the flex items on a line are inflexible, or are flexible but have reached their maximum size.
 /// It also exerts some control over the alignment of items when they overflow the line.
 ///
 /// <img src="https://css-tricks.com/wp-content/uploads/2018/10/justify-content.svg" alt="flex items within a flex container demonstrating the different spacing options" width="50%"/>
+#[derive(Debug)]
 pub enum JustifyContent {
     /// Items are packed toward the start of the flex-direction. (default)
     FlexStart,
@@ -26,6 +29,7 @@ pub enum JustifyContent {
 
 /// By default, flex items will all try to fit onto one line.
 /// You can change that and allow the items to wrap as needed with this property.
+#[derive(Debug)]
 pub enum FlexWrap {
     /// All flex items will be on one line. (default)
     NoWrap,
@@ -42,6 +46,7 @@ pub enum FlexWrap {
 /// <img src="https://css-tricks.com/wp-content/uploads/2018/10/align-items.svg" alt="demonstration of differnet alignment options, like all boxes stuck to the top of a flex parent, the bottom, stretched out, or along a baseline" width="50%"/>
 /// 
 /// Baseline is not supported yet.
+#[derive(Debug)]
 pub enum AlignItems {
     /// Stretch to fill the container (still respect min-width/max-width). (default)
     Stretch,
@@ -58,6 +63,7 @@ pub enum AlignItems {
 /// Note: This property only takes effect on multi-line flexible containers, where [`FlexWrap`] is set to either [`FlexWrap::Wrap`] or [`FlexWrap::WrapReverse`]). A single-line flexible container (i.e. where [`FlexWrap`] is set to its default value, [`FlexWrap::NoWrap`]) will not reflect [`AlignContent`].
 ///
 /// <img src="https://css-tricks.com/wp-content/uploads/2018/10/align-content.svg" alt="examples of the align-content property where a group of items cluster at the top or bottom, or stretch out to fill the space, or have spacing." width="50%"/>
+#[derive(Debug)]
 pub enum AlignContent {
     /// Items are packed in their default position as if no value was set. (default)
     Normal,

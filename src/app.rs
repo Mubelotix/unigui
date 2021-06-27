@@ -13,6 +13,7 @@ pub fn run<App: crate::app::App + 'static>(mut app: App) -> ! {
     let window = WindowBuilder::new().build(&event_loop).unwrap();
 
     let mut state = futures::executor::block_on(WgpuBackend::new(&window));
+    let mut window_size = window.inner_size();
 
     event_loop.run(move |event, _, control_flow| match event {
         Event::WindowEvent {
@@ -30,15 +31,18 @@ pub fn run<App: crate::app::App + 'static>(mut app: App) -> ! {
                 ..
             } => *control_flow = ControlFlow::Exit,
             WindowEvent::Resized(physical_size) => {
+                window_size = physical_size.to_owned();
                 state.resize(*physical_size);
             }
             WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
+                window_size = (*new_inner_size).to_owned();
                 state.resize(**new_inner_size);
             }
             _ => {}
         },
         Event::RedrawRequested(_) => {
             app.update();
+            app.allocate_area((window_size.width as usize, window_size.height as usize), (window_size.width as usize, window_size.height as usize));
             app.render(Area::new(Rect::sized(0.0, 0.0, 1920.0, 1080.0), &mut state));
 
             state.update();

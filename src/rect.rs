@@ -13,15 +13,3 @@ impl Rect {
         }
     }
 }
-
-impl std::ops::Add<Rect> for Rect {
-    type Output = Rect;
-
-    fn add(mut self, rhs: Rect) -> Self::Output {
-        self.top_left.0 += rhs.top_left.0;
-        self.top_left.1 += rhs.top_left.1;
-        self.bottom_right.0 += rhs.bottom_right.0;
-        self.bottom_right.1 += rhs.bottom_right.1;
-        self
-    }
-}

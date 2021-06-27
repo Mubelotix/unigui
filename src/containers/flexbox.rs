@@ -190,6 +190,30 @@ impl Widget for Flexbox {
     }
 }
 
+impl std::fmt::Debug for Flexbox {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        struct DString {
+            s: String,
+        }
+        impl std::fmt::Debug for DString {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "{}", self.s)
+            }
+        }
+
+        f.debug_struct("Flexbox")
+            .field("widgets", &DString { s: format!("{} widgets", self.widgets.len()) })
+            .field("widget_subareas", &self.widget_subareas)
+            .field("align_content", &self.align_content)
+            .field("align_items", &self.align_items)
+            .field("flex_wrap", &self.flex_wrap)
+            .field("justify_content", &self.justify_content)
+            .field("area_allocator", &DString { s: if self.area_allocator.is_some() {"Some(function)".to_string()} else {"None".to_string()} })
+            .field("must_render", &self.must_render)
+            .finish()
+    }
+}
+
 impl Flexbox {
     pub fn new() -> Flexbox {
         Flexbox {
