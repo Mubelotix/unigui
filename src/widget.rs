@@ -37,11 +37,13 @@ impl WidgetSize {
 
 pub trait Widget {
     /// Allows the widget to update its internal state.
+    /// Widgets should use message passing to collect events.
     fn update(&mut self) {}
 
     /// This function allows the widget to choose its size.  
-    /// Since arguments are passed, the widget can be responsive. 
-    /// 
+    /// Since arguments are passed, the widget can be responsive.  
+    /// This function will be called at every frame, before [Widget::render].  
+    ///   
     /// The container of the widget will then choose the final size and placement of the widget.  
     /// [Widget::render] will always be called after this.
     fn allocate_area(&mut self, screen_size: (usize, usize), container_size: (usize, usize)) -> WidgetSize;
