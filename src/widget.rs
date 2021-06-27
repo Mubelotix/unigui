@@ -2,25 +2,25 @@ use crate::*;
 
 #[derive(Debug, PartialEq)]
 pub struct WidgetSize {
-    pub min_width: usize,
-    pub width: usize,
-    pub max_width: usize,
-    pub min_height: usize,
-    pub height: usize,
-    pub max_height: usize,
+    pub min_width: f32,
+    pub width: f32,
+    pub max_width: f32,
+    pub min_height: f32,
+    pub height: f32,
+    pub max_height: f32,
 }
 
 impl WidgetSize {
-    pub fn set_size(&mut self, width: usize, height: usize) {
+    pub fn set_size(&mut self, width: f32, height: f32) {
         self.set_width(width);
         self.set_height(height);
     }
 
-    pub fn set_width(&mut self, width: usize) {
+    pub fn set_width(&mut self, width: f32) {
         self.width = width.clamp(self.min_width, self.max_width);
     }
 
-    pub fn set_height(&mut self, height: usize) {
+    pub fn set_height(&mut self, height: f32) {
         self.height = height.clamp(self.min_height, self.max_height);
     }
 
@@ -39,14 +39,7 @@ pub trait Widget {
     /// Allows the widget to update its internal state.
     fn update(&mut self) {}
 
-    /// This function will be called at each frame to ask if render is required.
-    /// If the widget returns `true`, then it will be rendered. The next function to be called will be [Widget::allocate_area].  
-    /// If the widget returns `false`, rendering of this object will be cancelled.
-    fn accept_render(&self) -> bool;
-
-    /// This function will usually be called after [Widget::accept_render], but may be called independently (on window resize for example).
-    /// 
-    /// It allows the widget to choose its size.  
+    /// This function allows the widget to choose its size.  
     /// Since arguments are passed, the widget can be responsive. 
     /// 
     /// The container of the widget will then choose the final size and placement of the widget.  

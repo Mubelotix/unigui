@@ -13,11 +13,11 @@ impl<'a> Area<'a> {
         }
     }
 
-    pub fn width(&self) -> isize {
+    pub fn width(&self) -> f32 {
         self.rect.bottom_right.0 - self.rect.top_left.0
     }
 
-    pub fn height(&self) -> isize {
+    pub fn height(&self) -> f32 {
         self.rect.bottom_right.1 - self.rect.top_left.1
     }
 

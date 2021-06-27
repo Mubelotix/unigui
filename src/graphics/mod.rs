@@ -1,4 +1,7 @@
+pub mod shapes;
+
 use crate::prelude::*;
+use crate::widget::Widget;
 use wgpu::util::DeviceExt;
 use winit::{
     event::*,
@@ -8,9 +11,9 @@ use winit::{
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
-struct Vertex {
-    position: [f32; 2],
-    color: [f32; 4],
+pub struct Vertex {
+    pub position: [f32; 2],
+    pub color: [f32; 4],
 }
 
 impl Vertex {
@@ -34,21 +37,6 @@ impl Vertex {
     }
 }
 
-const VERTICES: &[Vertex] = &[
-    Vertex {
-        position: [50.0, 100.0],
-        color: [1.0, 0.0, 0.0, 1.0],
-    },
-    Vertex {
-        position: [0.0, 0.0],
-        color: [0.0, 1.0, 0.0, 1.0],
-    },
-    Vertex {
-        position: [100.0, 0.0],
-        color: [0.0, 0.0, 1.0, 1.0],
-    },
-];
-
 #[repr(C)]
 #[derive(Debug, Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]
 struct Uniforms {
@@ -68,6 +56,7 @@ pub struct WgpuBackend {
     uniforms: Uniforms,
     uniform_buffer: wgpu::Buffer,
     uniform_bind_group: wgpu::BindGroup,
+    vertices: Vec<Vertex>,
 }
 
 impl WgpuBackend {
@@ -187,10 +176,11 @@ impl WgpuBackend {
             },
         });
 
+        let data = vec![0; 1_000_000];
         let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("Vertex Buffer"),
-            contents: bytemuck::cast_slice(VERTICES),
-            usage: wgpu::BufferUsage::VERTEX,
+            contents: &data,
+            usage: wgpu::BufferUsage::VERTEX | wgpu::BufferUsage::COPY_DST,
         });
 
         Self {
@@ -205,6 +195,7 @@ impl WgpuBackend {
             uniforms,
             uniform_buffer,
             uniform_bind_group,
+            vertices: Vec::new(),
         }
     }
 
@@ -222,7 +213,13 @@ impl WgpuBackend {
 
     fn update(&mut self) {}
 
+    pub fn add_vertex(&mut self, vertex: Vertex) {
+        self.vertices.push(vertex);
+    }
+
     fn render(&mut self) -> Result<(), wgpu::SwapChainError> {
+        self.queue.write_buffer(&self.vertex_buffer, 0, bytemuck::cast_slice(&self.vertices));
+
         let frame = self.swap_chain.get_current_frame()?.output;
         let mut encoder = self
             .device
@@ -236,7 +233,7 @@ impl WgpuBackend {
                 view: &frame.view,
                 resolve_target: None,
                 ops: wgpu::Operations {
-                    load: wgpu::LoadOp::Load,
+                    load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
                     store: true,
                 },
             }],
@@ -248,18 +245,19 @@ impl WgpuBackend {
         render_pass.set_bind_group(0, &self.uniform_bind_group, &[]);
         render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
 
-        render_pass.draw(0..VERTICES.len() as u32, 0..1);
+        render_pass.draw(0..self.vertices.len() as u32, 0..1);
 
         std::mem::drop(render_pass);
 
         self.queue.submit(std::iter::once(encoder.finish()));
+        self.vertices.clear();
 
         Ok(())
     }
 }
 
 impl WgpuBackend {
-    pub(crate) fn run(app: impl App) -> ! {
+    pub(crate) fn run<App: crate::app::App + 'static>(mut app: App) -> ! {
         let event_loop = EventLoop::new();
         let window = WindowBuilder::new().build(&event_loop).unwrap();
 
@@ -289,6 +287,9 @@ impl WgpuBackend {
                 _ => {}
             },
             Event::RedrawRequested(_) => {
+                app.update();
+                app.render(Area::new(Rect::sized(0.0, 0.0, 1920.0, 1080.0), &mut state));
+
                 state.update();
                 match state.render() {
                     Ok(_) => {}
