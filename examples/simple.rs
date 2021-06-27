@@ -1,12 +1,11 @@
 use fgui::prelude::*;
-use fgui_wgpu::WgpuBackend;
 
 #[derive(Debug)]
 pub struct App {
     should_render: bool,
 }
 
-impl fgui::App<WgpuBackend> for App {}
+impl fgui::App for App {}
 
 impl App {
     fn new() -> App {
@@ -16,7 +15,7 @@ impl App {
     }
 }
 
-impl fgui::Widget<WgpuBackend> for App {
+impl fgui::Widget for App {
     fn update(&mut self) {}
 
     fn accept_render(&self) -> bool {
@@ -31,10 +30,10 @@ impl fgui::Widget<WgpuBackend> for App {
         todo!()
     }
 
-    fn render(&self, mut surface: Area<WgpuBackend>) {}
+    fn render(&self, mut surface: Area) {}
 }
 
 fn main() {
     env_logger::init();
-    run::<WgpuBackend, App>(App::new())
+    run(App::new())
 }

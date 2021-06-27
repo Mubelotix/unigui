@@ -35,7 +35,7 @@ impl WidgetSize {
     }
 }
 
-pub trait Widget<Backend: BackendTrait> {
+pub trait Widget {
     /// Allows the widget to update its internal state.
     fn update(&mut self) {}
 
@@ -55,5 +55,5 @@ pub trait Widget<Backend: BackendTrait> {
 
     /// This function will always be called after [Widget::allocate_area].  
     /// The widget should consider that it owns the passed [Area] of the screen.
-    fn render(&self, area: Area<Backend>);
+    fn render(&self, area: Area);
 }

@@ -1,4 +1,4 @@
-use fgui::prelude::*;
+use crate::prelude::*;
 use wgpu::util::DeviceExt;
 use winit::{
     event::*,
@@ -105,8 +105,8 @@ impl WgpuBackend {
         };
         let swap_chain = device.create_swap_chain(&surface, &sc_desc);
 
-        let vs_module = device.create_shader_module(&wgpu::include_spirv!("shader.vert.spv"));
-        let fs_module = device.create_shader_module(&wgpu::include_spirv!("shader.frag.spv"));
+        let vs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.vert.spv"));
+        let fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.frag.spv"));
 
         let uniforms = Uniforms {
             screen_width: window.inner_size().width as f32,
@@ -258,8 +258,8 @@ impl WgpuBackend {
     }
 }
 
-impl Backend for WgpuBackend {
-    fn run(app: impl App<Self>) -> ! {
+impl WgpuBackend {
+    pub(crate) fn run(app: impl App) -> ! {
         let event_loop = EventLoop::new();
         let window = WindowBuilder::new().build(&event_loop).unwrap();
 

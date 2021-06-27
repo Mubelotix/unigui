@@ -4,8 +4,8 @@ use containers::*;
 /// A function that takes the screen size and the container size, returning the required size of an item.
 type AreaAllocator = Box<dyn FnMut((usize, usize), (usize, usize)) -> WidgetSize>;
 
-pub struct Flexbox<Backend: BackendTrait> {
-    widgets: Vec<Box<dyn Widget<Backend>>>,
+pub struct Flexbox {
+    widgets: Vec<Box<dyn Widget>>,
     widget_subareas: Vec<Rect>,
     align_content: AlignContent,
     align_items: AlignItems,
@@ -15,7 +15,7 @@ pub struct Flexbox<Backend: BackendTrait> {
     must_render: bool,
 }
 
-impl<Backend: BackendTrait> Widget<Backend> for Flexbox<Backend> {
+impl Widget for Flexbox {
     fn accept_render(&self) -> bool {
         if self.must_render {
             todo!();
@@ -177,7 +177,7 @@ impl<Backend: BackendTrait> Widget<Backend> for Flexbox<Backend> {
         container
     }
 
-    fn render<'a>(&'a self, mut area: Area<'a, Backend>) {
+    fn render<'a>(&'a self, mut area: Area<'a>) {
         debug_assert_eq!(self.widgets.len(), self.widget_subareas.len());
         
         for i in 0..self.widgets.len() {
@@ -190,8 +190,8 @@ impl<Backend: BackendTrait> Widget<Backend> for Flexbox<Backend> {
     }
 }
 
-impl<Backend: BackendTrait> Flexbox<Backend> {
-    pub fn new() -> Flexbox<Backend> {
+impl Flexbox {
+    pub fn new() -> Flexbox {
         Flexbox {
             widgets: Vec::new(),
             widget_subareas: Vec::new(),
@@ -204,7 +204,7 @@ impl<Backend: BackendTrait> Flexbox<Backend> {
         }
     }
 
-    pub fn add(&mut self, widget: Box<dyn Widget<Backend>>) {
+    pub fn add(&mut self, widget: Box<dyn Widget>) {
         self.widgets.push(widget);
         self.must_render = true;
     }
@@ -238,7 +238,7 @@ impl<Backend: BackendTrait> Flexbox<Backend> {
     }
 }
 
-impl<'a, Backend: BackendTrait> Default for Flexbox<Backend> {
+impl<'a> Default for Flexbox {
     fn default() -> Self {
         Self::new()
     }
@@ -248,17 +248,9 @@ impl<'a, Backend: BackendTrait> Default for Flexbox<Backend> {
 mod tests {
     use super::*;
 
-    struct TestBackend {}
-
-    impl Backend for TestBackend {
-        fn run(_app: impl App<Self>) -> ! {
-            todo!()
-        }
-    }
-
     struct Button {}
 
-    impl Widget<TestBackend> for Button {
+    impl Widget for Button {
         fn accept_render(&self) -> bool {
             true
         }
@@ -278,12 +270,12 @@ mod tests {
             }
         }
 
-        fn render(&self, _area: Area<TestBackend>) {}
+        fn render(&self, _area: Area) {}
     }
 
     #[test]
     fn test_flexbox_no_wrap() {
-        let mut flexbox = Flexbox::<TestBackend>::new();
+        let mut flexbox = Flexbox::new();
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
@@ -428,7 +420,7 @@ mod tests {
 
     #[test]
     fn test_flexbox_size_wrap() {
-        let mut flexbox = Flexbox::<TestBackend>::new();
+        let mut flexbox = Flexbox::new();
         flexbox.set_flex_wrap(FlexWrap::Wrap);
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));

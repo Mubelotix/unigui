@@ -1,12 +1,12 @@
 use crate::*;
 
-pub struct Area<'a, Backend: BackendTrait> {
+pub struct Area<'a> {
     pub rect: Rect, // TODO visibility
-    pub backend: &'a mut Backend,
+    pub backend: &'a mut WgpuBackend,
 }
 
-impl<'a, Backend: BackendTrait> Area<'a, Backend> {
-    pub fn new(rect: Rect, backend: &'a mut Backend) -> Area<'a, Backend> {
+impl<'a> Area<'a> {
+    pub fn new(rect: Rect, backend: &'a mut WgpuBackend) -> Area<'a> {
         Area {
             rect,
             backend,
@@ -21,7 +21,7 @@ impl<'a, Backend: BackendTrait> Area<'a, Backend> {
         self.rect.bottom_right.1 - self.rect.top_left.1
     }
 
-    pub fn subarea(&mut self, rect: Rect) -> Area<Backend> {
+    pub fn subarea(&mut self, rect: Rect) -> Area {
         Area {
             rect: self.rect + rect,
             backend: self.backend
