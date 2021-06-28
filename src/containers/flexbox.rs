@@ -212,7 +212,23 @@ impl Widget for Flexbox {
                 }
                 (vertical_space_between_amount, vertical_space_between_amount)
             }
-            AlignContent::Stretch => todo!(),
+            AlignContent::Stretch if rows.is_empty() => (0.0, 0.0),
+            AlignContent::Stretch => {
+                let mut excess_height = container.height - flexbox_height;
+                if excess_height < 0.0 {
+                    excess_height = 0.0;
+                }
+
+                let height_to_add = excess_height / rows.len() as f32;
+                for (widgets, _row_width, row_height) in &mut rows {
+                    *row_height += height_to_add;
+                    for widget in widgets {
+                        widget.set_height(*row_height);
+                    }
+                }
+
+                (0.0, 0.0)
+            }
         };
         self.widget_subareas.clear();
         for (row, row_width, row_height) in &rows {
