@@ -769,4 +769,147 @@ mod tests {
             }
         );
     }
+
+    #[test]
+    fn test_justify_content_no_wrap() {
+        let mut flexbox = Flexbox::new();
+        flexbox.set_area_allocator(Some(Box::new(|_, _| WidgetSize {
+            min_width: 0.0,
+            width: 1000.0,
+            max_width: 1000.0,
+            min_height: 0.0,
+            height: 1000.0,
+            max_height: 1000.0,
+        })));
+        flexbox.set_flex_wrap(FlexWrap::NoWrap);
+        flexbox.add(Box::new(Button {}));
+        flexbox.add(Box::new(Button {}));
+        flexbox.add(Box::new(Button {}));
+
+        // FlexStart
+        flexbox.set_justify_content(JustifyContent::FlexStart);
+        flexbox.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (50.0, 20.0)
+                },
+                Rect {
+                    top_left: (50.0, 0.0),
+                    bottom_right: (100.0, 20.0)
+                },
+                Rect {
+                    top_left: (100.0, 0.0),
+                    bottom_right: (150.0, 20.0)
+                }
+            ]
+        );
+
+        // FlexEnd
+        flexbox.set_justify_content(JustifyContent::FlexEnd);
+        flexbox.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (850.0, 0.0),
+                    bottom_right: (900.0, 20.0)
+                },
+                Rect {
+                    top_left: (900.0, 0.0),
+                    bottom_right: (950.0, 20.0)
+                },
+                Rect {
+                    top_left: (950.0, 0.0),
+                    bottom_right: (1000.0, 20.0)
+                }
+            ]
+        );
+
+        // Center
+        flexbox.set_justify_content(JustifyContent::Center);
+        flexbox.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (425.0, 0.0),
+                    bottom_right: (475.0, 20.0)
+                },
+                Rect {
+                    top_left: (475.0, 0.0),
+                    bottom_right: (525.0, 20.0)
+                },
+                Rect {
+                    top_left: (525.0, 0.0),
+                    bottom_right: (575.0, 20.0)
+                }
+            ]
+        );
+
+        // SpaceBetween
+        flexbox.set_justify_content(JustifyContent::SpaceBetween);
+        flexbox.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (50.0, 20.0)
+                },
+                Rect {
+                    top_left: (475.0, 0.0),
+                    bottom_right: (525.0, 20.0)
+                },
+                Rect {
+                    top_left: (950.0, 0.0),
+                    bottom_right: (1000.0, 20.0)
+                }
+            ]
+        );
+
+        // SpaceAround
+        flexbox.set_justify_content(JustifyContent::SpaceAround);
+        flexbox.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (141.66667, 0.0),
+                    bottom_right: (191.66667, 20.0)
+                },
+                Rect {
+                    top_left: (475.0, 0.0),
+                    bottom_right: (525.0, 20.0)
+                },
+                Rect {
+                    top_left: (808.3334, 0.0),
+                    bottom_right: (858.3334, 20.0)
+                }
+            ]
+        );
+
+        // SpaceEvenly
+        flexbox.set_justify_content(JustifyContent::SpaceEvenly);
+        flexbox.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (212.5, 0.0),
+                    bottom_right: (262.5, 20.0)
+                },
+                Rect {
+                    top_left: (475.0, 0.0),
+                    bottom_right: (525.0, 20.0)
+                },
+                Rect {
+                    top_left: (737.5, 0.0),
+                    bottom_right: (787.5, 20.0)
+                }
+            ]
+        );
+    }
 }
