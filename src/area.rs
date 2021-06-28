@@ -37,9 +37,7 @@ impl<'a> Area<'a> {
 
 impl<'a> std::fmt::Debug for Area<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Area")
-            .field("rect", &self.rect)
-            .finish() // TODO replace by finish_non_exhaustive once CI accepts it
+        f.debug_struct("Area").field("rect", &self.rect).finish() // TODO replace by finish_non_exhaustive once CI accepts it
     }
 }
 
