@@ -1,4 +1,4 @@
-use fgui::containers::{FlexWrap, Flexbox};
+use fgui::containers::*;
 use fgui::prelude::*;
 
 pub struct Rectangle {}
@@ -77,7 +77,10 @@ impl fgui::App for App {}
 impl App {
     fn new() -> App {
         let mut flexbox = Flexbox::new();
-        flexbox.set_flex_wrap(FlexWrap::Wrap);
+        flexbox.set_flex_wrap(FlexWrap::NoWrap);
+        flexbox.set_justify_content(JustifyContent::SpaceEvenly);
+        flexbox.add(Box::new(Rectangle {}));
+        flexbox.add(Box::new(Rectangle {}));
         flexbox.add(Box::new(Rectangle {}));
         flexbox.add(Box::new(Rectangle {}));
         flexbox.add(Box::new(Rectangle {}));

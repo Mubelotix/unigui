@@ -160,17 +160,90 @@ impl Widget for Flexbox {
         }
 
         // Prepare subareas
-        let mut x = 0.0;
+        let mut x;
         let mut y = 0.0;
         self.widget_subareas.clear();
-        for (row, _, row_height) in &rows {
-            for widget in row {
-                self.widget_subareas
-                    .push(Rect::sized(x, y, widget.width, widget.height));
-                x += widget.width;
+        for (row, row_width, row_height) in &rows {
+            match self.justify_content {
+                JustifyContent::FlexStart => {
+                    x = 0.0;
+                    for widget in row {
+                        self.widget_subareas
+                            .push(Rect::sized(x, y, widget.width, widget.height));
+                        x += widget.width;
+                    }
+                    y += row_height;
+                }
+                JustifyContent::FlexEnd => {
+                    x = container_size.0 as f32 - row_width;
+                    for widget in row {
+                        self.widget_subareas
+                            .push(Rect::sized(x, y, widget.width, widget.height));
+                        x += widget.width;
+                    }
+                    y += row_height;
+                }
+                JustifyContent::Center => {
+                    x = (container_size.0 as f32 - row_width) / 2.0;
+                    for widget in row {
+                        self.widget_subareas
+                            .push(Rect::sized(x, y, widget.width, widget.height));
+                        x += widget.width;
+                    }
+                    y += row_height;
+                }
+                JustifyContent::SpaceBetween if row.len() <= 1 => {
+                    x = (container_size.0 as f32 - row_width) / 2.0;
+                    for widget in row {
+                        self.widget_subareas
+                            .push(Rect::sized(x, y, widget.width, widget.height));
+                        x += widget.width;
+                    }
+                    y += row_height;
+                }
+                JustifyContent::SpaceBetween => {
+                    let mut space_between_amount =
+                        (container_size.0 as f32 - row_width) / (row.len() - 1) as f32;
+                    if space_between_amount < 0.0 {
+                        space_between_amount = 0.0;
+                    }
+                    x = 0.0;
+                    for widget in row {
+                        self.widget_subareas
+                            .push(Rect::sized(x, y, widget.width, widget.height));
+                        x += widget.width + space_between_amount;
+                    }
+                    y += row_height;
+                }
+                JustifyContent::SpaceAround => {
+                    let mut space_between_amount =
+                        (container_size.0 as f32 - row_width) / row.len() as f32;
+                    if space_between_amount < 0.0 {
+                        space_between_amount = 0.0;
+                    }
+                    x = space_between_amount / 2.0;
+                    for widget in row {
+                        self.widget_subareas
+                            .push(Rect::sized(x, y, widget.width, widget.height));
+                        x += widget.width + space_between_amount;
+                    }
+                    y += row_height;
+                }
+                JustifyContent::SpaceEvenly => {
+                    let mut space_between_amount =
+                        (container_size.0 as f32 - row_width) / (row.len() + 1) as f32;
+                    if space_between_amount < 0.0 {
+                        space_between_amount = 0.0;
+                    }
+                    x = space_between_amount;
+                    for widget in row {
+                        self.widget_subareas
+                            .push(Rect::sized(x, y, widget.width, widget.height));
+                        x += widget.width + space_between_amount;
+                    }
+                    y += row_height;
+                }
             }
-            y += row_height;
-            x = 0.0;
         }
 
         container.set_size(flexbox_width, flexbox_height);
