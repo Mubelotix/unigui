@@ -65,9 +65,7 @@ pub enum AlignItems {
 /// <img src="https://css-tricks.com/wp-content/uploads/2018/10/align-content.svg" alt="examples of the align-content property where a group of items cluster at the top or bottom, or stretch out to fill the space, or have spacing." width="50%"/>
 #[derive(Debug)]
 pub enum AlignContent {
-    /// Items are packed in their default position as if no value was set. (default)
-    Normal,
-    /// Items packed to the start of the container.
+    /// Items packed to the start of the container (default).
     FlexStart,
     /// Items packed to the end of the container.
     FlexEnd,

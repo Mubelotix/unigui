@@ -77,8 +77,17 @@ impl fgui::App for App {}
 impl App {
     fn new() -> App {
         let mut flexbox = Flexbox::new();
-        flexbox.set_flex_wrap(FlexWrap::NoWrap);
+        flexbox.set_area_allocator(Some(Box::new(|_screen_size, container_size| WidgetSize {
+            min_width: 0.0,
+            width: 0.0,
+            max_width: container_size.0 as f32,
+            min_height: 200.0,
+            height: 200.0,
+            max_height: container_size.1 as f32,
+        })));
+        flexbox.set_flex_wrap(FlexWrap::Wrap);
         flexbox.set_justify_content(JustifyContent::SpaceEvenly);
+        flexbox.set_align_content(AlignContent::SpaceEvenly);
         flexbox.add(Box::new(Rectangle {}));
         flexbox.add(Box::new(Rectangle {}));
         flexbox.add(Box::new(Rectangle {}));

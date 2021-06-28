@@ -158,10 +158,62 @@ impl Widget for Flexbox {
             flexbox_width = max(flexbox_width, *row_width);
             flexbox_height += row_height;
         }
+        container.set_size(flexbox_width, flexbox_height);
 
         // Prepare subareas
         let mut x;
-        let mut y = 0.0;
+        let (mut y, vertical_space_between_amount) = match self.align_content {
+            AlignContent::FlexStart => (0.0, 0.0),
+            AlignContent::FlexEnd => {
+                let mut y = container.height - flexbox_height;
+                if y < 0.0 {
+                    y = 0.0;
+                }
+                (y, 0.0)
+            }
+            AlignContent::Center => {
+                let mut y = (container.height - flexbox_height) / 2.0;
+                if y < 0.0 {
+                    y = 0.0;
+                }
+                (y, 0.0)
+            }
+            AlignContent::SpaceBetween if rows.len() <= 1 => {
+                let mut y = (container.height - flexbox_height) / 2.0;
+                if y < 0.0 {
+                    y = 0.0;
+                }
+                (y, 0.0)
+            }
+            AlignContent::SpaceBetween => {
+                let mut vertical_space_between_amount =
+                    (container.height - flexbox_height) / (rows.len() - 1) as f32;
+                if vertical_space_between_amount < 0.0 {
+                    vertical_space_between_amount = 0.0;
+                }
+                (0.0, vertical_space_between_amount)
+            }
+            AlignContent::SpaceAround => {
+                let mut vertical_space_between_amount =
+                    (container.height - flexbox_height) / rows.len() as f32;
+                if vertical_space_between_amount < 0.0 {
+                    vertical_space_between_amount = 0.0;
+                }
+                (
+                    vertical_space_between_amount / 2.0,
+                    vertical_space_between_amount,
+                )
+            }
+            AlignContent::SpaceEvenly => {
+                let mut vertical_space_between_amount =
+                    (container.height - flexbox_height) / (rows.len() + 1) as f32;
+                if vertical_space_between_amount < 0.0 {
+                    vertical_space_between_amount = 0.0;
+                }
+                (vertical_space_between_amount, vertical_space_between_amount)
+            }
+            AlignContent::Stretch => todo!(),
+        };
         self.widget_subareas.clear();
         for (row, row_width, row_height) in &rows {
             match self.justify_content {
@@ -241,12 +293,11 @@ impl Widget for Flexbox {
                             .push(Rect::sized(x, y, widget.width, widget.height));
                         x += widget.width + space_between_amount;
                     }
-                    y += row_height;
+                    y += row_height + vertical_space_between_amount;
                 }
             }
         }
 
-        container.set_size(flexbox_width, flexbox_height);
         container
     }
 
@@ -306,7 +357,7 @@ impl Flexbox {
         Flexbox {
             widgets: Vec::new(),
             widget_subareas: Vec::new(),
-            align_content: AlignContent::Normal,
+            align_content: AlignContent::FlexStart,
             align_items: AlignItems::Stretch,
             flex_wrap: FlexWrap::NoWrap,
             justify_content: JustifyContent::FlexStart,
