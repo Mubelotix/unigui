@@ -28,7 +28,6 @@ pub struct Flexbox {
     flex_wrap: FlexWrap,
     justify_content: JustifyContent,
     area_allocator: Option<AreaAllocator>,
-    must_render: bool,
 }
 
 impl Widget for Flexbox {
@@ -367,7 +366,6 @@ impl Flexbox {
             flex_wrap: FlexWrap::NoWrap,
             justify_content: JustifyContent::FlexStart,
             area_allocator: None,
-            must_render: true,
         }
     }
 
@@ -388,12 +386,10 @@ impl Flexbox {
 
     pub fn set_align_content(&mut self, align_content: AlignContent) {
         self.align_content = align_content;
-        self.must_render = true;
     }
 
     pub fn set_align_items(&mut self, align_items: AlignItems) {
         self.align_items = align_items;
-        self.must_render = true;
     }
 
     /// By default, the size of the flexbox will be automatically inferred from its content.
@@ -401,7 +397,6 @@ impl Flexbox {
     /// You may want to set a custom area allocator that the flexbox will fit exactly.
     pub fn set_area_allocator(&mut self, area_allocator: Option<AreaAllocator>) {
         self.area_allocator = area_allocator;
-        self.must_render = true;
     }
 }
 
