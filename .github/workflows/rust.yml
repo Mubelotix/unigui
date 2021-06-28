@@ -31,7 +31,7 @@ jobs:
       run: cargo test --verbose
     - name: Code Coverage
       run: |
-        cargo install cargo-tarpaulin
+        cargo install cargo-tarpaulin || true
         cargo tarpaulin --force-clean=false --verbose --all-features --workspace --timeout 120 --out Xml
     - name: Upload to codecov.io
       uses: codecov/codecov-action@v1
