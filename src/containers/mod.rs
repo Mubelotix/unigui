@@ -10,10 +10,10 @@ pub use flexbox::Flexbox;
 /// <img src="https://css-tricks.com/wp-content/uploads/2018/10/justify-content.svg" alt="flex items within a flex container demonstrating the different spacing options" width="50%"/>
 #[derive(Debug)]
 pub enum JustifyContent {
-    /// Items are packed toward the start of the flex-direction. (default)
-    FlexStart,
-    /// Items are packed toward the end of the flex-direction.
-    FlexEnd,
+    /// Items are packed toward the left. (default)
+    Left,
+    /// Items are packed toward the right.
+    Right,
     /// Items are centered along the line
     Center,
     /// Items are evenly distributed in the line; first item is on the start line, last item on the end line
@@ -50,10 +50,10 @@ pub enum FlexWrap {
 pub enum AlignItems {
     /// Stretch to fill the container (still respect min-width/max-width). (default)
     Stretch,
-    /// Items are placed at the start of the cross axis.
-    FlexStart,
-    /// Items are placed at the end of the cross axis.
-    FlexEnd,
+    /// Items are placed at the top.
+    Top,
+    /// Items are placed at the bottom.
+    Bottom,
     /// Items are centered in the cross-axis.
     Center,
 }
@@ -65,10 +65,10 @@ pub enum AlignItems {
 /// <img src="https://css-tricks.com/wp-content/uploads/2018/10/align-content.svg" alt="examples of the align-content property where a group of items cluster at the top or bottom, or stretch out to fill the space, or have spacing." width="50%"/>
 #[derive(Debug)]
 pub enum AlignContent {
-    /// Items packed to the start of the container (default).
-    FlexStart,
-    /// Items packed to the end of the container.
-    FlexEnd,
+    /// Items packed to the top of the container (default).
+    Top,
+    /// Items packed to the bottom of the container.
+    Bottom,
     /// Items centered in the container.
     Center,
     /// Items evenly distributed; the first line is at the start of the container while the last one is at the end.

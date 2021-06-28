@@ -171,8 +171,8 @@ impl Widget for Flexbox {
         // Prepare subareas
         let mut x;
         let (mut y, y_offset) = match self.align_content {
-            AlignContent::FlexStart => (0.0, 0.0),
-            AlignContent::FlexEnd => {
+            AlignContent::Top => (0.0, 0.0),
+            AlignContent::Bottom => {
                 let mut y = container.height - flexbox_height;
                 if y < 0.0 {
                     y = 0.0;
@@ -241,8 +241,8 @@ impl Widget for Flexbox {
         self.widget_subareas.clear();
         for (row, row_width, row_height) in &rows {
             let (new_x, x_offset) = match self.justify_content {
-                JustifyContent::FlexStart => (0.0, 0.0),
-                JustifyContent::FlexEnd => (container_size.0 as f32 - row_width, 0.0),
+                JustifyContent::Left => (0.0, 0.0),
+                JustifyContent::Right => (container_size.0 as f32 - row_width, 0.0),
                 JustifyContent::Center => ((container_size.0 as f32 - row_width) / 2.0, 0.0),
                 JustifyContent::SpaceBetween if row.len() <= 1 => {
                     ((container_size.0 as f32 - row_width) / 2.0, 0.0)
@@ -276,8 +276,8 @@ impl Widget for Flexbox {
             x = new_x;
             for widget in row {
                 let (widget_y_offset, widget_height) = match self.align_items {
-                    AlignItems::FlexStart => (0.0, widget.height),
-                    AlignItems::FlexEnd => {
+                    AlignItems::Top => (0.0, widget.height),
+                    AlignItems::Bottom => {
                         let mut widget_y_offset = row_height - widget.height;
                         if widget_y_offset < 0.0 {
                             widget_y_offset = 0.0;
@@ -364,10 +364,10 @@ impl Flexbox {
         Flexbox {
             widgets: Vec::new(),
             widget_subareas: Vec::new(),
-            align_content: AlignContent::FlexStart,
-            align_items: AlignItems::FlexStart,
+            align_content: AlignContent::Top,
+            align_items: AlignItems::Top,
             flex_wrap: FlexWrap::Wrap,
-            justify_content: JustifyContent::FlexStart,
+            justify_content: JustifyContent::Left,
             area_allocator: None,
         }
     }
@@ -805,8 +805,8 @@ mod tests {
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
 
-        // FlexStart
-        flexbox.set_justify_content(JustifyContent::FlexStart);
+        // Left
+        flexbox.set_justify_content(JustifyContent::Left);
         flexbox.allocate_area((1000, 1000), (1000, 1000));
         assert_eq!(
             flexbox.widget_subareas,
@@ -826,8 +826,8 @@ mod tests {
             ]
         );
 
-        // FlexEnd
-        flexbox.set_justify_content(JustifyContent::FlexEnd);
+        // Right
+        flexbox.set_justify_content(JustifyContent::Right);
         flexbox.allocate_area((1000, 1000), (1000, 1000));
         assert_eq!(
             flexbox.widget_subareas,
@@ -948,8 +948,8 @@ mod tests {
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
 
-        // FlexStart
-        flexbox.set_justify_content(JustifyContent::FlexStart);
+        // Left
+        flexbox.set_justify_content(JustifyContent::Left);
         flexbox.allocate_area((120, 1000), (120, 1000));
         assert_eq!(
             flexbox.widget_subareas,
@@ -969,8 +969,8 @@ mod tests {
             ]
         );
 
-        // FlexEnd
-        flexbox.set_justify_content(JustifyContent::FlexEnd);
+        // Right
+        flexbox.set_justify_content(JustifyContent::Right);
         flexbox.allocate_area((120, 1000), (120, 1000));
         assert_eq!(
             flexbox.widget_subareas,
@@ -1091,8 +1091,8 @@ mod tests {
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
 
-        // FlexStart
-        flexbox.set_align_content(AlignContent::FlexStart);
+        // Top
+        flexbox.set_align_content(AlignContent::Top);
         flexbox.allocate_area((50, 100), (50, 100));
         assert_eq!(
             flexbox.widget_subareas,
@@ -1112,8 +1112,8 @@ mod tests {
             ]
         );
 
-        // FlexEnd
-        flexbox.set_align_content(AlignContent::FlexEnd);
+        // Bottom
+        flexbox.set_align_content(AlignContent::Bottom);
         flexbox.allocate_area((50, 100), (50, 100));
         assert_eq!(
             flexbox.widget_subareas,
@@ -1294,8 +1294,8 @@ mod tests {
         flexbox.add(Box::new(BigButton {}));
         flexbox.add(Box::new(Button {}));
 
-        // FlexStart
-        flexbox.set_align_items(AlignItems::FlexStart);
+        // Top
+        flexbox.set_align_items(AlignItems::Top);
         flexbox.allocate_area((1000, 1000), (1000, 1000));
         assert_eq!(
             flexbox.widget_subareas,
@@ -1315,8 +1315,8 @@ mod tests {
             ]
         );
 
-        // FlexEnd
-        flexbox.set_align_items(AlignItems::FlexEnd);
+        // Bottom
+        flexbox.set_align_items(AlignItems::Bottom);
         flexbox.allocate_area((1000, 1000), (1000, 1000));
         assert_eq!(
             flexbox.widget_subareas,
