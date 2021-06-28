@@ -162,7 +162,7 @@ impl Widget for Flexbox {
 
         // Prepare subareas
         let mut x;
-        let (mut y, vertical_space_between_amount) = match self.align_content {
+        let (mut y, y_offset) = match self.align_content {
             AlignContent::FlexStart => (0.0, 0.0),
             AlignContent::FlexEnd => {
                 let mut y = container.height - flexbox_height;
@@ -216,42 +216,12 @@ impl Widget for Flexbox {
         };
         self.widget_subareas.clear();
         for (row, row_width, row_height) in &rows {
-            match self.justify_content {
-                JustifyContent::FlexStart => {
-                    x = 0.0;
-                    for widget in row {
-                        self.widget_subareas
-                            .push(Rect::sized(x, y, widget.width, widget.height));
-                        x += widget.width;
-                    }
-                    y += row_height;
-                }
-                JustifyContent::FlexEnd => {
-                    x = container_size.0 as f32 - row_width;
-                    for widget in row {
-                        self.widget_subareas
-                            .push(Rect::sized(x, y, widget.width, widget.height));
-                        x += widget.width;
-                    }
-                    y += row_height;
-                }
-                JustifyContent::Center => {
-                    x = (container_size.0 as f32 - row_width) / 2.0;
-                    for widget in row {
-                        self.widget_subareas
-                            .push(Rect::sized(x, y, widget.width, widget.height));
-                        x += widget.width;
-                    }
-                    y += row_height;
-                }
+            let (new_x, x_offset) = match self.justify_content {
+                JustifyContent::FlexStart => (0.0, 0.0),
+                JustifyContent::FlexEnd => (container_size.0 as f32 - row_width, 0.0),
+                JustifyContent::Center => ((container_size.0 as f32 - row_width) / 2.0, 0.0),
                 JustifyContent::SpaceBetween if row.len() <= 1 => {
-                    x = (container_size.0 as f32 - row_width) / 2.0;
-                    for widget in row {
-                        self.widget_subareas
-                            .push(Rect::sized(x, y, widget.width, widget.height));
-                        x += widget.width;
-                    }
-                    y += row_height;
+                    ((container_size.0 as f32 - row_width) / 2.0, 0.0)
                 }
                 JustifyContent::SpaceBetween => {
                     let mut space_between_amount =
@@ -259,13 +229,7 @@ impl Widget for Flexbox {
                     if space_between_amount < 0.0 {
                         space_between_amount = 0.0;
                     }
-                    x = 0.0;
-                    for widget in row {
-                        self.widget_subareas
-                            .push(Rect::sized(x, y, widget.width, widget.height));
-                        x += widget.width + space_between_amount;
-                    }
-                    y += row_height;
+                    (0.0, space_between_amount)
                 }
                 JustifyContent::SpaceAround => {
                     let mut space_between_amount =
@@ -273,13 +237,7 @@ impl Widget for Flexbox {
                     if space_between_amount < 0.0 {
                         space_between_amount = 0.0;
                     }
-                    x = space_between_amount / 2.0;
-                    for widget in row {
-                        self.widget_subareas
-                            .push(Rect::sized(x, y, widget.width, widget.height));
-                        x += widget.width + space_between_amount;
-                    }
-                    y += row_height;
+                    (space_between_amount / 2.0, space_between_amount)
                 }
                 JustifyContent::SpaceEvenly => {
                     let mut space_between_amount =
@@ -287,15 +245,39 @@ impl Widget for Flexbox {
                     if space_between_amount < 0.0 {
                         space_between_amount = 0.0;
                     }
-                    x = space_between_amount;
-                    for widget in row {
-                        self.widget_subareas
-                            .push(Rect::sized(x, y, widget.width, widget.height));
-                        x += widget.width + space_between_amount;
-                    }
-                    y += row_height + vertical_space_between_amount;
+                    (space_between_amount, space_between_amount)
                 }
+            };
+
+            x = new_x;
+            for widget in row {
+                let widget_y_offset = match self.align_items {
+                    AlignItems::FlexStart => 0.0,
+                    AlignItems::FlexEnd => {
+                        let mut widget_y_offset = row_height - widget.height;
+                        if widget_y_offset < 0.0 {
+                            widget_y_offset = 0.0;
+                        }
+                        widget_y_offset
+                    }
+                    AlignItems::Center => {
+                        let mut widget_y_offset = (row_height - widget.height) / 2.0;
+                        if widget_y_offset < 0.0 {
+                            widget_y_offset = 0.0;
+                        }
+                        widget_y_offset
+                    }
+                    AlignItems::Stretch => todo!(),
+                };
+                self.widget_subareas.push(Rect::sized(
+                    x,
+                    y + widget_y_offset,
+                    widget.width,
+                    widget.height,
+                ));
+                x += widget.width + x_offset;
             }
+            y += row_height + y_offset;
         }
 
         container
