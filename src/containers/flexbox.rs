@@ -63,7 +63,9 @@ impl Widget for Flexbox {
                     row_height = max(row_height, widget_size.height);
                     row.push(widget_size);
                 }
-                rows.push((row, row_width, row_height));
+                if !row.is_empty() {
+                    rows.push((row, row_width, row_height));
+                }
             }
             FlexWrap::Wrap => {
                 let (mut row, mut row_width, mut row_height) = (Vec::new(), 0.0, 0.0);
@@ -73,7 +75,7 @@ impl Widget for Flexbox {
                         (container.max_width as usize, container.max_height as usize),
                     );
 
-                    if row_width + widget_size.width > container.max_width {
+                    if !row.is_empty() && row_width + widget_size.width > container.max_width {
                         rows.push((row, row_width, row_height));
                         row_width = 0.0;
                         row_height = 0.0;
@@ -84,7 +86,9 @@ impl Widget for Flexbox {
                     row_height = max(row_height, widget_size.height);
                     row.push(widget_size);
                 }
-                rows.push((row, row_width, row_height));
+                if !row.is_empty() {
+                    rows.push((row, row_width, row_height));
+                }
             }
             FlexWrap::WrapReverse => {
                 todo!()
@@ -351,7 +355,6 @@ impl std::fmt::Debug for Flexbox {
                     },
                 },
             )
-            .field("must_render", &self.must_render)
             .finish()
     }
 }
@@ -362,8 +365,8 @@ impl Flexbox {
             widgets: Vec::new(),
             widget_subareas: Vec::new(),
             align_content: AlignContent::FlexStart,
-            align_items: AlignItems::Stretch,
-            flex_wrap: FlexWrap::NoWrap,
+            align_items: AlignItems::FlexStart,
+            flex_wrap: FlexWrap::Wrap,
             justify_content: JustifyContent::FlexStart,
             area_allocator: None,
         }
@@ -371,17 +374,14 @@ impl Flexbox {
 
     pub fn add(&mut self, widget: Box<dyn Widget>) {
         self.widgets.push(widget);
-        self.must_render = true;
     }
 
     pub fn set_flex_wrap(&mut self, flex_wrap: FlexWrap) {
         self.flex_wrap = flex_wrap;
-        self.must_render = true;
     }
 
     pub fn set_justify_content(&mut self, justify_content: JustifyContent) {
         self.justify_content = justify_content;
-        self.must_render = true;
     }
 
     pub fn set_align_content(&mut self, align_content: AlignContent) {
@@ -1237,6 +1237,45 @@ mod tests {
                 }
             ]
         );
+    }
+
+    #[test]
+    fn test_align_content_with_overflow() {
+        let mut flexbox = Flexbox::new();
+        flexbox.set_area_allocator(Some(Box::new(|_, _| WidgetSize {
+            min_width: 0.0,
+            width: 10.0,
+            max_width: 10.0,
+            min_height: 0.0,
+            height: 100.0,
+            max_height: 100.0,
+        })));
+        flexbox.set_flex_wrap(FlexWrap::Wrap);
+        flexbox.add(Box::new(Button {}));
+        flexbox.add(Box::new(Button {}));
+        flexbox.add(Box::new(Button {}));
+
+        // SpaceBetween
+        flexbox.set_align_content(AlignContent::SpaceBetween);
+        flexbox.allocate_area((10, 100), (10, 100));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (40.0, 20.0)
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (40.0, 60.0)
+                },
+                Rect {
+                    top_left: (0.0, 80.0),
+                    bottom_right: (40.0, 100.0)
+                }
+            ]
+        );
+
     }
 
     #[test]
