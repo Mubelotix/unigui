@@ -267,29 +267,31 @@ impl Widget for Flexbox {
 
             x = new_x;
             for widget in row {
-                let widget_y_offset = match self.align_items {
-                    AlignItems::FlexStart => 0.0,
+                let (widget_y_offset, widget_height) = match self.align_items {
+                    AlignItems::FlexStart => (0.0, widget.height),
                     AlignItems::FlexEnd => {
                         let mut widget_y_offset = row_height - widget.height;
                         if widget_y_offset < 0.0 {
                             widget_y_offset = 0.0;
                         }
-                        widget_y_offset
+                        (widget_y_offset, widget.height)
                     }
                     AlignItems::Center => {
                         let mut widget_y_offset = (row_height - widget.height) / 2.0;
                         if widget_y_offset < 0.0 {
                             widget_y_offset = 0.0;
                         }
-                        widget_y_offset
+                        (widget_y_offset, widget.height)
                     }
-                    AlignItems::Stretch => todo!(),
+                    AlignItems::Stretch => {
+                        (0.0, row_height.clamp(widget.min_height, widget.max_height))
+                    }
                 };
                 self.widget_subareas.push(Rect::sized(
                     x,
                     y + widget_y_offset,
                     widget.width,
-                    widget.height,
+                    widget_height,
                 ));
                 x += widget.width + x_offset;
             }
