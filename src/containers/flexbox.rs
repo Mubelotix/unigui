@@ -416,7 +416,6 @@ mod tests {
     use super::*;
 
     struct Button {}
-
     impl Widget for Button {
         fn allocate_area(
             &mut self,
@@ -430,6 +429,26 @@ mod tests {
                 min_height: 15.0,
                 height: 20.0,
                 max_height: 25.0,
+            }
+        }
+
+        fn render(&self, _area: Area) {}
+    }
+
+    struct BigButton {}
+    impl Widget for BigButton {
+        fn allocate_area(
+            &mut self,
+            _screen_size: (usize, usize),
+            _container_size: (usize, usize),
+        ) -> WidgetSize {
+            WidgetSize {
+                min_width: 40.0,
+                width: 50.0,
+                max_width: 60.0,
+                min_height: 20.0,
+                height: 30.0,
+                max_height: 40.0,
             }
         }
 
@@ -1220,6 +1239,107 @@ mod tests {
                 Rect {
                     top_left: (0.0, 66.666664),
                     bottom_right: (50.0, 91.666664)
+                }
+            ]
+        );
+    }
+
+    #[test]
+    fn test_align_items() {
+        let mut flexbox = Flexbox::new();
+        flexbox.set_area_allocator(Some(Box::new(|_, _| WidgetSize {
+            min_width: 0.0,
+            width: 1000.0,
+            max_width: 1000.0,
+            min_height: 0.0,
+            height: 1000.0,
+            max_height: 1000.0,
+        })));
+        flexbox.set_flex_wrap(FlexWrap::NoWrap);
+        flexbox.add(Box::new(Button {}));
+        flexbox.add(Box::new(BigButton {}));
+        flexbox.add(Box::new(Button {}));
+
+        // FlexStart
+        flexbox.set_align_items(AlignItems::FlexStart);
+        flexbox.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (50.0, 20.0)
+                },
+                Rect {
+                    top_left: (50.0, 0.0),
+                    bottom_right: (100.0, 30.0)
+                },
+                Rect {
+                    top_left: (100.0, 0.0),
+                    bottom_right: (150.0, 20.0)
+                }
+            ]
+        );
+
+        // FlexEnd
+        flexbox.set_align_items(AlignItems::FlexEnd);
+        flexbox.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 10.0),
+                    bottom_right: (50.0, 30.0)
+                },
+                Rect {
+                    top_left: (50.0, 0.0),
+                    bottom_right: (100.0, 30.0)
+                },
+                Rect {
+                    top_left: (100.0, 10.0),
+                    bottom_right: (150.0, 30.0)
+                }
+            ]
+        );
+
+        // Center
+        flexbox.set_align_items(AlignItems::Center);
+        flexbox.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 5.0),
+                    bottom_right: (50.0, 25.0)
+                },
+                Rect {
+                    top_left: (50.0, 0.0),
+                    bottom_right: (100.0, 30.0)
+                },
+                Rect {
+                    top_left: (100.0, 5.0),
+                    bottom_right: (150.0, 25.0)
+                }
+            ]
+        );
+
+        // Stretch
+        flexbox.set_align_items(AlignItems::Stretch);
+        flexbox.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (50.0, 25.0)
+                },
+                Rect {
+                    top_left: (50.0, 0.0),
+                    bottom_right: (100.0, 30.0)
+                },
+                Rect {
+                    top_left: (100.0, 0.0),
+                    bottom_right: (150.0, 25.0)
                 }
             ]
         );
