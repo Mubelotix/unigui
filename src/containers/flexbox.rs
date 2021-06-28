@@ -453,6 +453,7 @@ mod tests {
     #[test]
     fn test_flexbox_no_wrap() {
         let mut flexbox = Flexbox::new();
+        flexbox.set_flex_wrap(FlexWrap::NoWrap);
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
         flexbox.add(Box::new(Button {}));
