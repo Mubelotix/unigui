@@ -158,7 +158,12 @@ impl Widget for Flexbox {
             flexbox_width = max(flexbox_width, *row_width);
             flexbox_height += row_height;
         }
-        container.set_size(flexbox_width, flexbox_height);
+        if flexbox_width > container.width {
+            container.set_width(flexbox_width);
+        }
+        if flexbox_height > container.height {
+            container.set_height(flexbox_height);
+        }
 
         // Prepare subareas
         let mut x;
@@ -1051,6 +1056,170 @@ mod tests {
                 Rect {
                     top_left: (35.0, 20.0),
                     bottom_right: (85.0, 40.0)
+                }
+            ]
+        );
+    }
+
+    #[test]
+    fn test_align_content() {
+        let mut flexbox = Flexbox::new();
+        flexbox.set_area_allocator(Some(Box::new(|_, _| WidgetSize {
+            min_width: 0.0,
+            width: 50.0,
+            max_width: 50.0,
+            min_height: 0.0,
+            height: 100.0,
+            max_height: 100.0,
+        })));
+        flexbox.set_flex_wrap(FlexWrap::Wrap);
+        flexbox.add(Box::new(Button {}));
+        flexbox.add(Box::new(Button {}));
+        flexbox.add(Box::new(Button {}));
+
+        // FlexStart
+        flexbox.set_align_content(AlignContent::FlexStart);
+        flexbox.allocate_area((50, 100), (50, 100));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (50.0, 20.0)
+                },
+                Rect {
+                    top_left: (0.0, 20.0),
+                    bottom_right: (50.0, 40.0)
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (50.0, 60.0)
+                }
+            ]
+        );
+
+        // FlexEnd
+        flexbox.set_align_content(AlignContent::FlexEnd);
+        flexbox.allocate_area((50, 100), (50, 100));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (50.0, 60.0)
+                },
+                Rect {
+                    top_left: (0.0, 60.0),
+                    bottom_right: (50.0, 80.0)
+                },
+                Rect {
+                    top_left: (0.0, 80.0),
+                    bottom_right: (50.0, 100.0)
+                }
+            ]
+        );
+
+        // Center
+        flexbox.set_align_content(AlignContent::Center);
+        flexbox.allocate_area((50, 100), (50, 100));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 20.0),
+                    bottom_right: (50.0, 40.0)
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (50.0, 60.0)
+                },
+                Rect {
+                    top_left: (0.0, 60.0),
+                    bottom_right: (50.0, 80.0)
+                }
+            ]
+        );
+
+        // SpaceBetween
+        flexbox.set_align_content(AlignContent::SpaceBetween);
+        flexbox.allocate_area((50, 100), (50, 100));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (50.0, 20.0)
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (50.0, 60.0)
+                },
+                Rect {
+                    top_left: (0.0, 80.0),
+                    bottom_right: (50.0, 100.0)
+                }
+            ]
+        );
+
+        // SpaceAround
+        flexbox.set_align_content(AlignContent::SpaceAround);
+        flexbox.allocate_area((50, 100), (50, 100));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 6.6666665),
+                    bottom_right: (50.0, 26.666666)
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (50.0, 60.0)
+                },
+                Rect {
+                    top_left: (0.0, 73.33333),
+                    bottom_right: (50.0, 93.33333)
+                }
+            ]
+        );
+
+        // SpaceEvenly
+        flexbox.set_align_content(AlignContent::SpaceEvenly);
+        flexbox.allocate_area((50, 100), (50, 100));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 10.0),
+                    bottom_right: (50.0, 30.0)
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (50.0, 60.0)
+                },
+                Rect {
+                    top_left: (0.0, 70.0),
+                    bottom_right: (50.0, 90.0)
+                }
+            ]
+        );
+
+        // Stretch
+        flexbox.set_align_content(AlignContent::Stretch);
+        flexbox.allocate_area((50, 100), (50, 100));
+        assert_eq!(
+            flexbox.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (50.0, 25.0)
+                },
+                Rect {
+                    top_left: (0.0, 33.333332),
+                    bottom_right: (50.0, 58.333332)
+                },
+                Rect {
+                    top_left: (0.0, 66.666664),
+                    bottom_right: (50.0, 91.666664)
                 }
             ]
         );
