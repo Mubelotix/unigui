@@ -21,8 +21,8 @@ impl Widget for Button {
 
     fn render(&self, surface: Area) {
         use fgui::graphics::Vertex;
-        use lyon::math::{point, Point, size};
-        use lyon::path::{Path, builder::BorderRadii, Winding};
+        use lyon::math::{point, size, Point};
+        use lyon::path::{builder::BorderRadii, Path, Winding};
         use lyon::tessellation::{geometry_builder::simple_builder, *};
 
         // Create a simple path.

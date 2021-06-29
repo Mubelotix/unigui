@@ -27,39 +27,24 @@ impl Widget for Rectangle {
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
-            position: [
-                surface.rect.max.0 - 2.0,
-                surface.rect.min.1 + 2.0,
-            ],
+            position: [surface.rect.max.0 - 2.0, surface.rect.min.1 + 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
-            position: [
-                surface.rect.min.0 + 2.0,
-                surface.rect.max.1 - 2.0,
-            ],
+            position: [surface.rect.min.0 + 2.0, surface.rect.max.1 - 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
 
         surface.backend.add_vertex(Vertex {
-            position: [
-                surface.rect.min.0 + 2.0,
-                surface.rect.max.1 - 2.0,
-            ],
+            position: [surface.rect.min.0 + 2.0, surface.rect.max.1 - 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
-            position: [
-                surface.rect.max.0 - 2.0,
-                surface.rect.min.1 + 2.0,
-            ],
+            position: [surface.rect.max.0 - 2.0, surface.rect.min.1 + 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
-            position: [
-                surface.rect.max.0 - 2.0,
-                surface.rect.max.1 - 2.0,
-            ],
+            position: [surface.rect.max.0 - 2.0, surface.rect.max.1 - 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
     }
@@ -91,39 +76,24 @@ impl Widget for BigRectangle {
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
-            position: [
-                surface.rect.max.0 - 2.0,
-                surface.rect.min.1 + 2.0,
-            ],
+            position: [surface.rect.max.0 - 2.0, surface.rect.min.1 + 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
-            position: [
-                surface.rect.min.0 + 2.0,
-                surface.rect.max.1 - 2.0,
-            ],
+            position: [surface.rect.min.0 + 2.0, surface.rect.max.1 - 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
 
         surface.backend.add_vertex(Vertex {
-            position: [
-                surface.rect.min.0 + 2.0,
-                surface.rect.max.1 - 2.0,
-            ],
+            position: [surface.rect.min.0 + 2.0, surface.rect.max.1 - 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
-            position: [
-                surface.rect.max.0 - 2.0,
-                surface.rect.min.1 + 2.0,
-            ],
+            position: [surface.rect.max.0 - 2.0, surface.rect.min.1 + 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
-            position: [
-                surface.rect.max.0 - 2.0,
-                surface.rect.max.1 - 2.0,
-            ],
+            position: [surface.rect.max.0 - 2.0, surface.rect.max.1 - 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
     }

@@ -1,7 +1,7 @@
 use fgui::containers::*;
 use fgui::prelude::*;
 
-#[path ="unigui-classic/src/lib.rs"]
+#[path = "unigui-classic/src/lib.rs"]
 mod unigui_classic;
 use unigui_classic::button::Button;
 

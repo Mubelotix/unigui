@@ -21,14 +21,8 @@ impl<'a> Area<'a> {
     pub fn subarea(&mut self, rect: Rect) -> Area {
         Area {
             rect: Rect {
-                min: (
-                    self.rect.min.0 + rect.min.0,
-                    self.rect.min.1 + rect.min.1,
-                ),
-                max: (
-                    self.rect.min.0 + rect.max.0,
-                    self.rect.min.1 + rect.max.1,
-                ),
+                min: (self.rect.min.0 + rect.min.0, self.rect.min.1 + rect.min.1),
+                max: (self.rect.min.0 + rect.max.0, self.rect.min.1 + rect.max.1),
             },
             backend: self.backend,
         }
