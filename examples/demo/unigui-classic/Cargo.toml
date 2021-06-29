@@ -1,0 +1,8 @@
+[package]
+name = "unigui-classic"
+version = "0.1.0"
+authors = ["Mubelotix <mubelotix@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+fgui = {path="../../.."}
