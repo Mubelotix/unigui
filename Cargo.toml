@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 winit = "0.25"
-wgpu = "0.8" # TODO: Do we need the "vulkan-portability" feature?
+wgpu = "0.9" # TODO: Do we need the "vulkan-portability" feature?
 env_logger = "0.8" # TODO: Remove this
 futures = "0.3"
 bytemuck = { version = "1.5", features = [ "derive" ] }
