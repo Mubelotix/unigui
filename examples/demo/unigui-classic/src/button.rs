@@ -1,8 +1,7 @@
 use fgui::prelude::*;
+use lyon::path::traits::PathBuilder;
 
-pub struct Button {
-
-}
+pub struct Button {}
 
 impl Widget for Button {
     fn allocate_area(
@@ -22,17 +21,20 @@ impl Widget for Button {
 
     fn render(&self, surface: Area) {
         use fgui::graphics::Vertex;
+        use lyon::math::{point, Point, size};
+        use lyon::path::{Path, builder::BorderRadii, Winding};
         use lyon::tessellation::{geometry_builder::simple_builder, *};
-        use lyon::path::Path;
-        use lyon::math::{point, Point};
 
         // Create a simple path.
         let mut path_builder = Path::builder();
-        path_builder.begin(point(surface.rect.top_left.0 + 0.0, surface.rect.top_left.1 + 0.0));
-        path_builder.line_to(point(surface.rect.top_left.0 + 10.0, surface.rect.top_left.1 + 20.0));
-        path_builder.line_to(point(surface.rect.top_left.0 + 20.0, surface.rect.top_left.1 + 0.0));
-        path_builder.line_to(point(surface.rect.top_left.0 + 10.0, surface.rect.top_left.1 + 10.0));
-        path_builder.end(true);
+        path_builder.add_rounded_rectangle(
+            &lyon::math::Rect::new(
+                point(surface.rect.top_left.0 + 2.5, surface.rect.top_left.1 + 2.5),
+                size(surface.rect.width() - 5.0, surface.rect.height() - 5.0),
+            ),
+            &BorderRadii::new(5.0),
+            Winding::Negative,
+        );
         let path = path_builder.build();
 
         // Create the destination vertex and index buffers.
@@ -45,11 +47,8 @@ impl Widget for Button {
             let mut tessellator = FillTessellator::new();
 
             // Compute the tessellation.
-            let result = tessellator.tessellate_path(
-                &path,
-                &FillOptions::default(),
-                &mut vertex_builder
-            );
+            let result =
+                tessellator.tessellate_path(&path, &FillOptions::default(), &mut vertex_builder);
             assert!(result.is_ok());
         }
 
@@ -61,6 +60,5 @@ impl Widget for Button {
             };
             surface.backend.add_vertex(vertex);
         }
-
     }
 }
