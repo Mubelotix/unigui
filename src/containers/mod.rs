@@ -1,6 +1,13 @@
+pub mod div;
 pub mod flexbox;
 
+pub use div::Div;
 pub use flexbox::Flexbox;
+
+use crate::prelude::*;
+
+/// A function that takes the screen size and the container size, returning the required size of an item.
+type AreaAllocator = Box<dyn FnMut((usize, usize), (usize, usize)) -> WidgetSize>;
 
 /// This defines the alignment along the main axis.
 ///
@@ -79,4 +86,22 @@ pub enum AlignContent {
     SpaceEvenly,
     /// Lines stretch to take up the remaining space.
     Stretch,
+}
+
+#[inline]
+fn max(i1: f32, i2: f32) -> f32 {
+    if i1 > i2 {
+        i1
+    } else {
+        i2
+    }
+}
+
+#[inline]
+fn min(i1: f32, i2: f32) -> f32 {
+    if i1 < i2 {
+        i1
+    } else {
+        i2
+    }
 }

@@ -1,24 +1,5 @@
-use crate::*;
+use crate::prelude::*;
 use containers::*;
-
-/// A function that takes the screen size and the container size, returning the required size of an item.
-type AreaAllocator = Box<dyn FnMut((usize, usize), (usize, usize)) -> WidgetSize>;
-
-fn max(i1: f32, i2: f32) -> f32 {
-    if i1 > i2 {
-        i1
-    } else {
-        i2
-    }
-}
-
-fn min(i1: f32, i2: f32) -> f32 {
-    if i1 < i2 {
-        i1
-    } else {
-        i2
-    }
-}
 
 pub struct Flexbox {
     widgets: Vec<Box<dyn Widget>>,
@@ -1276,7 +1257,6 @@ mod tests {
                 }
             ]
         );
-
     }
 
     #[test]
