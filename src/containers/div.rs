@@ -88,8 +88,8 @@ impl Widget for Div {
                     }
                 };
             } else {
-                widget_size.fit_width(&container);
-                widget_size.fit_height(&container);
+                widget_size.fit_width_in(&container);
+                widget_size.fit_height_in(&container);
                 rows.push((widget_size.width, widget_size.height, vec![widget_size]));
             }
             previous_is_inline = *is_inline;
@@ -164,5 +164,214 @@ impl std::fmt::Debug for Div {
                 },
             )
             .finish()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::rect::Rect;
+
+    struct Button {}
+    impl Widget for Button {
+        fn allocate_area(
+            &mut self,
+            _screen_size: (usize, usize),
+            _container_size: (usize, usize),
+        ) -> WidgetSize {
+            WidgetSize {
+                min_width: 40.0,
+                width: 50.0,
+                max_width: 60.0,
+                min_height: 15.0,
+                height: 20.0,
+                max_height: 25.0,
+            }
+        }
+
+        fn render(&self, _area: Area) {}
+    }
+
+    #[test]
+    fn test_div_basic() {
+        let mut div = Div::new();
+        div.add_block(Box::new(Button {}));
+        div.add_block(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+
+        div.allocate_area((1000, 1000), (1000, 1000));
+        assert_eq!(
+            div.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (50.0, 20.0),
+                },
+                Rect {
+                    top_left: (0.0, 20.0),
+                    bottom_right: (50.0, 40.0),
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (50.0, 60.0),
+                },
+                Rect {
+                    top_left: (50.0, 40.0),
+                    bottom_right: (100.0, 60.0),
+                },
+                Rect {
+                    top_left: (100.0, 40.0),
+                    bottom_right: (150.0, 60.0),
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn test_div_wrapping() {
+        let mut div = Div::new();
+        div.add_block(Box::new(Button {}));
+        div.add_block(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+
+        div.allocate_area((100, 100), (100, 100));
+        assert_eq!(
+            div.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (50.0, 20.0),
+                },
+                Rect {
+                    top_left: (0.0, 20.0),
+                    bottom_right: (50.0, 40.0),
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (50.0, 60.0),
+                },
+                Rect {
+                    top_left: (50.0, 40.0),
+                    bottom_right: (100.0, 60.0),
+                },
+                Rect {
+                    top_left: (0.0, 60.0),
+                    bottom_right: (50.0, 80.0),
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn test_div_resizing() {
+        let mut div = Div::new();
+        div.add_block(Box::new(Button {}));
+        div.add_block(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+
+        div.allocate_area((45, 100), (45, 100));
+        assert_eq!(
+            div.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (45.0, 20.0),
+                },
+                Rect {
+                    top_left: (0.0, 20.0),
+                    bottom_right: (45.0, 40.0),
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (45.0, 60.0),
+                },
+                Rect {
+                    top_left: (0.0, 60.0),
+                    bottom_right: (45.0, 80.0),
+                },
+                Rect {
+                    top_left: (0.0, 80.0),
+                    bottom_right: (45.0, 100.0),
+                },
+            ]
+        );
+
+        div.allocate_area((35, 50), (35, 50));
+        assert_eq!(
+            div.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (40.0, 20.0),
+                },
+                Rect {
+                    top_left: (0.0, 20.0),
+                    bottom_right: (40.0, 40.0),
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (40.0, 60.0),
+                },
+                Rect {
+                    top_left: (0.0, 60.0),
+                    bottom_right: (40.0, 80.0),
+                },
+                Rect {
+                    top_left: (0.0, 80.0),
+                    bottom_right: (40.0, 100.0),
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn test_div_custom_allocator() {
+        let mut div = Div::new();
+        div.set_area_allocator(Some(Box::new(|_, _| WidgetSize {
+            min_width: 200.0,
+            width: 200.0,
+            max_width: 200.0,
+            min_height: 200.0,
+            height: 200.0,
+            max_height: 200.0,
+        })));
+        div.add_block(Box::new(Button {}));
+        div.add_block(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+        div.add_inline(Box::new(Button {}));
+
+        div.allocate_area((20, 20), (20, 20));
+        assert_eq!(
+            div.widget_subareas,
+            vec![
+                Rect {
+                    top_left: (0.0, 0.0),
+                    bottom_right: (50.0, 20.0),
+                },
+                Rect {
+                    top_left: (0.0, 20.0),
+                    bottom_right: (50.0, 40.0),
+                },
+                Rect {
+                    top_left: (0.0, 40.0),
+                    bottom_right: (50.0, 60.0),
+                },
+                Rect {
+                    top_left: (50.0, 40.0),
+                    bottom_right: (100.0, 60.0),
+                },
+                Rect {
+                    top_left: (100.0, 40.0),
+                    bottom_right: (150.0, 60.0),
+                },
+            ]
+        );
     }
 }

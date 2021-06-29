@@ -37,6 +37,24 @@ impl WidgetSize {
             .clamp(restrictions.min_width, restrictions.max_width);
         self.width = width.clamp(self.min_width, self.max_width);
     }
+
+    pub fn fit_height_in(&mut self, restrictions: &WidgetSize) {
+        let height = if self.height > restrictions.max_height {
+            restrictions.max_height
+        } else {
+            self.height
+        };
+        self.height = height.clamp(self.min_height, self.max_height);
+    }
+
+    pub fn fit_width_in(&mut self, restrictions: &WidgetSize) {
+        let width = if self.width > restrictions.max_width {
+            restrictions.max_width
+        } else {
+            self.width
+        };
+        self.width = width.clamp(self.min_width, self.max_width);
+    }
 }
 
 pub trait Widget {
