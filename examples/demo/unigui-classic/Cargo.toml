@@ -6,3 +6,4 @@ edition = "2018"
 
 [dependencies]
 fgui = {path="../../.."}
+lyon = "0.17"
