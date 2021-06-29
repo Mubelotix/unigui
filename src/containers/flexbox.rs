@@ -456,16 +456,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (50.0, 0.0),
-                    bottom_right: (100.0, 20.0)
+                    min: (50.0, 0.0),
+                    max: (100.0, 20.0)
                 },
                 Rect {
-                    top_left: (100.0, 0.0),
-                    bottom_right: (150.0, 20.0)
+                    min: (100.0, 0.0),
+                    max: (150.0, 20.0)
                 }
             ]
         );
@@ -487,16 +487,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (40.0, 15.0)
+                    min: (0.0, 0.0),
+                    max: (40.0, 15.0)
                 },
                 Rect {
-                    top_left: (40.0, 0.0),
-                    bottom_right: (80.0, 15.0)
+                    min: (40.0, 0.0),
+                    max: (80.0, 15.0)
                 },
                 Rect {
-                    top_left: (80.0, 0.0),
-                    bottom_right: (120.0, 15.0)
+                    min: (80.0, 0.0),
+                    max: (120.0, 15.0)
                 }
             ]
         );
@@ -540,16 +540,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (50.0, 0.0),
-                    bottom_right: (100.0, 20.0)
+                    min: (50.0, 0.0),
+                    max: (100.0, 20.0)
                 },
                 Rect {
-                    top_left: (100.0, 0.0),
-                    bottom_right: (150.0, 20.0)
+                    min: (100.0, 0.0),
+                    max: (150.0, 20.0)
                 }
             ]
         );
@@ -602,16 +602,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (50.0, 0.0),
-                    bottom_right: (100.0, 20.0)
+                    min: (50.0, 0.0),
+                    max: (100.0, 20.0)
                 },
                 Rect {
-                    top_left: (100.0, 0.0),
-                    bottom_right: (150.0, 20.0)
+                    min: (100.0, 0.0),
+                    max: (150.0, 20.0)
                 }
             ]
         );
@@ -633,16 +633,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (50.0, 0.0),
-                    bottom_right: (100.0, 20.0)
+                    min: (50.0, 0.0),
+                    max: (100.0, 20.0)
                 },
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (50.0, 40.0)
+                    min: (0.0, 20.0),
+                    max: (50.0, 40.0)
                 }
             ]
         );
@@ -664,16 +664,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (45.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (45.0, 20.0)
                 },
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (45.0, 40.0)
+                    min: (0.0, 20.0),
+                    max: (45.0, 40.0)
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (45.0, 60.0)
+                    min: (0.0, 40.0),
+                    max: (45.0, 60.0)
                 }
             ]
         );
@@ -695,16 +695,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (40.0, 15.0)
+                    min: (0.0, 0.0),
+                    max: (40.0, 15.0)
                 },
                 Rect {
-                    top_left: (0.0, 15.0),
-                    bottom_right: (40.0, 30.0)
+                    min: (0.0, 15.0),
+                    max: (40.0, 30.0)
                 },
                 Rect {
-                    top_left: (0.0, 30.0),
-                    bottom_right: (40.0, 45.0)
+                    min: (0.0, 30.0),
+                    max: (40.0, 45.0)
                 }
             ]
         );
@@ -734,16 +734,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (50.0, 40.0)
+                    min: (0.0, 20.0),
+                    max: (50.0, 40.0)
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (50.0, 60.0)
+                    min: (0.0, 40.0),
+                    max: (50.0, 60.0)
                 }
             ]
         );
@@ -794,16 +794,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (50.0, 0.0),
-                    bottom_right: (100.0, 20.0)
+                    min: (50.0, 0.0),
+                    max: (100.0, 20.0)
                 },
                 Rect {
-                    top_left: (100.0, 0.0),
-                    bottom_right: (150.0, 20.0)
+                    min: (100.0, 0.0),
+                    max: (150.0, 20.0)
                 }
             ]
         );
@@ -815,16 +815,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (850.0, 0.0),
-                    bottom_right: (900.0, 20.0)
+                    min: (850.0, 0.0),
+                    max: (900.0, 20.0)
                 },
                 Rect {
-                    top_left: (900.0, 0.0),
-                    bottom_right: (950.0, 20.0)
+                    min: (900.0, 0.0),
+                    max: (950.0, 20.0)
                 },
                 Rect {
-                    top_left: (950.0, 0.0),
-                    bottom_right: (1000.0, 20.0)
+                    min: (950.0, 0.0),
+                    max: (1000.0, 20.0)
                 }
             ]
         );
@@ -836,16 +836,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (425.0, 0.0),
-                    bottom_right: (475.0, 20.0)
+                    min: (425.0, 0.0),
+                    max: (475.0, 20.0)
                 },
                 Rect {
-                    top_left: (475.0, 0.0),
-                    bottom_right: (525.0, 20.0)
+                    min: (475.0, 0.0),
+                    max: (525.0, 20.0)
                 },
                 Rect {
-                    top_left: (525.0, 0.0),
-                    bottom_right: (575.0, 20.0)
+                    min: (525.0, 0.0),
+                    max: (575.0, 20.0)
                 }
             ]
         );
@@ -857,16 +857,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (475.0, 0.0),
-                    bottom_right: (525.0, 20.0)
+                    min: (475.0, 0.0),
+                    max: (525.0, 20.0)
                 },
                 Rect {
-                    top_left: (950.0, 0.0),
-                    bottom_right: (1000.0, 20.0)
+                    min: (950.0, 0.0),
+                    max: (1000.0, 20.0)
                 }
             ]
         );
@@ -878,16 +878,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (141.66667, 0.0),
-                    bottom_right: (191.66667, 20.0)
+                    min: (141.66667, 0.0),
+                    max: (191.66667, 20.0)
                 },
                 Rect {
-                    top_left: (475.0, 0.0),
-                    bottom_right: (525.0, 20.0)
+                    min: (475.0, 0.0),
+                    max: (525.0, 20.0)
                 },
                 Rect {
-                    top_left: (808.3334, 0.0),
-                    bottom_right: (858.3334, 20.0)
+                    min: (808.3334, 0.0),
+                    max: (858.3334, 20.0)
                 }
             ]
         );
@@ -899,16 +899,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (212.5, 0.0),
-                    bottom_right: (262.5, 20.0)
+                    min: (212.5, 0.0),
+                    max: (262.5, 20.0)
                 },
                 Rect {
-                    top_left: (475.0, 0.0),
-                    bottom_right: (525.0, 20.0)
+                    min: (475.0, 0.0),
+                    max: (525.0, 20.0)
                 },
                 Rect {
-                    top_left: (737.5, 0.0),
-                    bottom_right: (787.5, 20.0)
+                    min: (737.5, 0.0),
+                    max: (787.5, 20.0)
                 }
             ]
         );
@@ -937,16 +937,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (50.0, 0.0),
-                    bottom_right: (100.0, 20.0)
+                    min: (50.0, 0.0),
+                    max: (100.0, 20.0)
                 },
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (50.0, 40.0)
+                    min: (0.0, 20.0),
+                    max: (50.0, 40.0)
                 }
             ]
         );
@@ -958,16 +958,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (20.0, 0.0),
-                    bottom_right: (70.0, 20.0)
+                    min: (20.0, 0.0),
+                    max: (70.0, 20.0)
                 },
                 Rect {
-                    top_left: (70.0, 0.0),
-                    bottom_right: (120.0, 20.0)
+                    min: (70.0, 0.0),
+                    max: (120.0, 20.0)
                 },
                 Rect {
-                    top_left: (70.0, 20.0),
-                    bottom_right: (120.0, 40.0)
+                    min: (70.0, 20.0),
+                    max: (120.0, 40.0)
                 }
             ]
         );
@@ -979,16 +979,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (10.0, 0.0),
-                    bottom_right: (60.0, 20.0)
+                    min: (10.0, 0.0),
+                    max: (60.0, 20.0)
                 },
                 Rect {
-                    top_left: (60.0, 0.0),
-                    bottom_right: (110.0, 20.0)
+                    min: (60.0, 0.0),
+                    max: (110.0, 20.0)
                 },
                 Rect {
-                    top_left: (35.0, 20.0),
-                    bottom_right: (85.0, 40.0)
+                    min: (35.0, 20.0),
+                    max: (85.0, 40.0)
                 }
             ]
         );
@@ -1000,16 +1000,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (70.0, 0.0),
-                    bottom_right: (120.0, 20.0)
+                    min: (70.0, 0.0),
+                    max: (120.0, 20.0)
                 },
                 Rect {
-                    top_left: (35.0, 20.0),
-                    bottom_right: (85.0, 40.0)
+                    min: (35.0, 20.0),
+                    max: (85.0, 40.0)
                 }
             ]
         );
@@ -1021,16 +1021,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (5.0, 0.0),
-                    bottom_right: (55.0, 20.0)
+                    min: (5.0, 0.0),
+                    max: (55.0, 20.0)
                 },
                 Rect {
-                    top_left: (65.0, 0.0),
-                    bottom_right: (115.0, 20.0)
+                    min: (65.0, 0.0),
+                    max: (115.0, 20.0)
                 },
                 Rect {
-                    top_left: (35.0, 20.0),
-                    bottom_right: (85.0, 40.0)
+                    min: (35.0, 20.0),
+                    max: (85.0, 40.0)
                 }
             ]
         );
@@ -1042,16 +1042,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (6.6666665, 0.0),
-                    bottom_right: (56.666668, 20.0)
+                    min: (6.6666665, 0.0),
+                    max: (56.666668, 20.0)
                 },
                 Rect {
-                    top_left: (63.333336, 0.0),
-                    bottom_right: (113.333336, 20.0)
+                    min: (63.333336, 0.0),
+                    max: (113.333336, 20.0)
                 },
                 Rect {
-                    top_left: (35.0, 20.0),
-                    bottom_right: (85.0, 40.0)
+                    min: (35.0, 20.0),
+                    max: (85.0, 40.0)
                 }
             ]
         );
@@ -1080,16 +1080,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (50.0, 40.0)
+                    min: (0.0, 20.0),
+                    max: (50.0, 40.0)
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (50.0, 60.0)
+                    min: (0.0, 40.0),
+                    max: (50.0, 60.0)
                 }
             ]
         );
@@ -1101,16 +1101,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (50.0, 60.0)
+                    min: (0.0, 40.0),
+                    max: (50.0, 60.0)
                 },
                 Rect {
-                    top_left: (0.0, 60.0),
-                    bottom_right: (50.0, 80.0)
+                    min: (0.0, 60.0),
+                    max: (50.0, 80.0)
                 },
                 Rect {
-                    top_left: (0.0, 80.0),
-                    bottom_right: (50.0, 100.0)
+                    min: (0.0, 80.0),
+                    max: (50.0, 100.0)
                 }
             ]
         );
@@ -1122,16 +1122,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (50.0, 40.0)
+                    min: (0.0, 20.0),
+                    max: (50.0, 40.0)
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (50.0, 60.0)
+                    min: (0.0, 40.0),
+                    max: (50.0, 60.0)
                 },
                 Rect {
-                    top_left: (0.0, 60.0),
-                    bottom_right: (50.0, 80.0)
+                    min: (0.0, 60.0),
+                    max: (50.0, 80.0)
                 }
             ]
         );
@@ -1143,16 +1143,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (50.0, 60.0)
+                    min: (0.0, 40.0),
+                    max: (50.0, 60.0)
                 },
                 Rect {
-                    top_left: (0.0, 80.0),
-                    bottom_right: (50.0, 100.0)
+                    min: (0.0, 80.0),
+                    max: (50.0, 100.0)
                 }
             ]
         );
@@ -1164,16 +1164,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 6.6666665),
-                    bottom_right: (50.0, 26.666666)
+                    min: (0.0, 6.6666665),
+                    max: (50.0, 26.666666)
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (50.0, 60.0)
+                    min: (0.0, 40.0),
+                    max: (50.0, 60.0)
                 },
                 Rect {
-                    top_left: (0.0, 73.33333),
-                    bottom_right: (50.0, 93.33333)
+                    min: (0.0, 73.33333),
+                    max: (50.0, 93.33333)
                 }
             ]
         );
@@ -1185,16 +1185,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 10.0),
-                    bottom_right: (50.0, 30.0)
+                    min: (0.0, 10.0),
+                    max: (50.0, 30.0)
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (50.0, 60.0)
+                    min: (0.0, 40.0),
+                    max: (50.0, 60.0)
                 },
                 Rect {
-                    top_left: (0.0, 70.0),
-                    bottom_right: (50.0, 90.0)
+                    min: (0.0, 70.0),
+                    max: (50.0, 90.0)
                 }
             ]
         );
@@ -1206,16 +1206,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 25.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 25.0)
                 },
                 Rect {
-                    top_left: (0.0, 33.333332),
-                    bottom_right: (50.0, 58.333332)
+                    min: (0.0, 33.333332),
+                    max: (50.0, 58.333332)
                 },
                 Rect {
-                    top_left: (0.0, 66.666664),
-                    bottom_right: (50.0, 91.666664)
+                    min: (0.0, 66.666664),
+                    max: (50.0, 91.666664)
                 }
             ]
         );
@@ -1244,16 +1244,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (40.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (40.0, 20.0)
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (40.0, 60.0)
+                    min: (0.0, 40.0),
+                    max: (40.0, 60.0)
                 },
                 Rect {
-                    top_left: (0.0, 80.0),
-                    bottom_right: (40.0, 100.0)
+                    min: (0.0, 80.0),
+                    max: (40.0, 100.0)
                 }
             ]
         );
@@ -1282,16 +1282,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0)
                 },
                 Rect {
-                    top_left: (50.0, 0.0),
-                    bottom_right: (100.0, 30.0)
+                    min: (50.0, 0.0),
+                    max: (100.0, 30.0)
                 },
                 Rect {
-                    top_left: (100.0, 0.0),
-                    bottom_right: (150.0, 20.0)
+                    min: (100.0, 0.0),
+                    max: (150.0, 20.0)
                 }
             ]
         );
@@ -1303,16 +1303,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 10.0),
-                    bottom_right: (50.0, 30.0)
+                    min: (0.0, 10.0),
+                    max: (50.0, 30.0)
                 },
                 Rect {
-                    top_left: (50.0, 0.0),
-                    bottom_right: (100.0, 30.0)
+                    min: (50.0, 0.0),
+                    max: (100.0, 30.0)
                 },
                 Rect {
-                    top_left: (100.0, 10.0),
-                    bottom_right: (150.0, 30.0)
+                    min: (100.0, 10.0),
+                    max: (150.0, 30.0)
                 }
             ]
         );
@@ -1324,16 +1324,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 5.0),
-                    bottom_right: (50.0, 25.0)
+                    min: (0.0, 5.0),
+                    max: (50.0, 25.0)
                 },
                 Rect {
-                    top_left: (50.0, 0.0),
-                    bottom_right: (100.0, 30.0)
+                    min: (50.0, 0.0),
+                    max: (100.0, 30.0)
                 },
                 Rect {
-                    top_left: (100.0, 5.0),
-                    bottom_right: (150.0, 25.0)
+                    min: (100.0, 5.0),
+                    max: (150.0, 25.0)
                 }
             ]
         );
@@ -1345,16 +1345,16 @@ mod tests {
             flexbox.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 25.0)
+                    min: (0.0, 0.0),
+                    max: (50.0, 25.0)
                 },
                 Rect {
-                    top_left: (50.0, 0.0),
-                    bottom_right: (100.0, 30.0)
+                    min: (50.0, 0.0),
+                    max: (100.0, 30.0)
                 },
                 Rect {
-                    top_left: (100.0, 0.0),
-                    bottom_right: (150.0, 25.0)
+                    min: (100.0, 0.0),
+                    max: (150.0, 25.0)
                 }
             ]
         );

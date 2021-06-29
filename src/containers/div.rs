@@ -206,24 +206,24 @@ mod tests {
             div.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0),
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0),
                 },
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (50.0, 40.0),
+                    min: (0.0, 20.0),
+                    max: (50.0, 40.0),
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (50.0, 60.0),
+                    min: (0.0, 40.0),
+                    max: (50.0, 60.0),
                 },
                 Rect {
-                    top_left: (50.0, 40.0),
-                    bottom_right: (100.0, 60.0),
+                    min: (50.0, 40.0),
+                    max: (100.0, 60.0),
                 },
                 Rect {
-                    top_left: (100.0, 40.0),
-                    bottom_right: (150.0, 60.0),
+                    min: (100.0, 40.0),
+                    max: (150.0, 60.0),
                 },
             ]
         );
@@ -243,24 +243,24 @@ mod tests {
             div.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0),
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0),
                 },
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (50.0, 40.0),
+                    min: (0.0, 20.0),
+                    max: (50.0, 40.0),
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (50.0, 60.0),
+                    min: (0.0, 40.0),
+                    max: (50.0, 60.0),
                 },
                 Rect {
-                    top_left: (50.0, 40.0),
-                    bottom_right: (100.0, 60.0),
+                    min: (50.0, 40.0),
+                    max: (100.0, 60.0),
                 },
                 Rect {
-                    top_left: (0.0, 60.0),
-                    bottom_right: (50.0, 80.0),
+                    min: (0.0, 60.0),
+                    max: (50.0, 80.0),
                 },
             ]
         );
@@ -280,24 +280,24 @@ mod tests {
             div.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (45.0, 20.0),
+                    min: (0.0, 0.0),
+                    max: (45.0, 20.0),
                 },
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (45.0, 40.0),
+                    min: (0.0, 20.0),
+                    max: (45.0, 40.0),
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (45.0, 60.0),
+                    min: (0.0, 40.0),
+                    max: (45.0, 60.0),
                 },
                 Rect {
-                    top_left: (0.0, 60.0),
-                    bottom_right: (45.0, 80.0),
+                    min: (0.0, 60.0),
+                    max: (45.0, 80.0),
                 },
                 Rect {
-                    top_left: (0.0, 80.0),
-                    bottom_right: (45.0, 100.0),
+                    min: (0.0, 80.0),
+                    max: (45.0, 100.0),
                 },
             ]
         );
@@ -307,24 +307,24 @@ mod tests {
             div.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (40.0, 20.0),
+                    min: (0.0, 0.0),
+                    max: (40.0, 20.0),
                 },
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (40.0, 40.0),
+                    min: (0.0, 20.0),
+                    max: (40.0, 40.0),
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (40.0, 60.0),
+                    min: (0.0, 40.0),
+                    max: (40.0, 60.0),
                 },
                 Rect {
-                    top_left: (0.0, 60.0),
-                    bottom_right: (40.0, 80.0),
+                    min: (0.0, 60.0),
+                    max: (40.0, 80.0),
                 },
                 Rect {
-                    top_left: (0.0, 80.0),
-                    bottom_right: (40.0, 100.0),
+                    min: (0.0, 80.0),
+                    max: (40.0, 100.0),
                 },
             ]
         );
@@ -352,24 +352,24 @@ mod tests {
             div.widget_subareas,
             vec![
                 Rect {
-                    top_left: (0.0, 0.0),
-                    bottom_right: (50.0, 20.0),
+                    min: (0.0, 0.0),
+                    max: (50.0, 20.0),
                 },
                 Rect {
-                    top_left: (0.0, 20.0),
-                    bottom_right: (50.0, 40.0),
+                    min: (0.0, 20.0),
+                    max: (50.0, 40.0),
                 },
                 Rect {
-                    top_left: (0.0, 40.0),
-                    bottom_right: (50.0, 60.0),
+                    min: (0.0, 40.0),
+                    max: (50.0, 60.0),
                 },
                 Rect {
-                    top_left: (50.0, 40.0),
-                    bottom_right: (100.0, 60.0),
+                    min: (50.0, 40.0),
+                    max: (100.0, 60.0),
                 },
                 Rect {
-                    top_left: (100.0, 40.0),
-                    bottom_right: (150.0, 60.0),
+                    min: (100.0, 40.0),
+                    max: (150.0, 60.0),
                 },
             ]
         );

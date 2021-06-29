@@ -23,42 +23,42 @@ impl Widget for Rectangle {
         use fgui::graphics::Vertex;
 
         surface.backend.add_vertex(Vertex {
-            position: [surface.rect.top_left.0 + 2.0, surface.rect.top_left.1 + 2.0],
+            position: [surface.rect.min.0 + 2.0, surface.rect.min.1 + 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
             position: [
-                surface.rect.bottom_right.0 - 2.0,
-                surface.rect.top_left.1 + 2.0,
+                surface.rect.max.0 - 2.0,
+                surface.rect.min.1 + 2.0,
             ],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
             position: [
-                surface.rect.top_left.0 + 2.0,
-                surface.rect.bottom_right.1 - 2.0,
+                surface.rect.min.0 + 2.0,
+                surface.rect.max.1 - 2.0,
             ],
             color: [1.0, 0.0, 0.0, 1.0],
         });
 
         surface.backend.add_vertex(Vertex {
             position: [
-                surface.rect.top_left.0 + 2.0,
-                surface.rect.bottom_right.1 - 2.0,
+                surface.rect.min.0 + 2.0,
+                surface.rect.max.1 - 2.0,
             ],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
             position: [
-                surface.rect.bottom_right.0 - 2.0,
-                surface.rect.top_left.1 + 2.0,
+                surface.rect.max.0 - 2.0,
+                surface.rect.min.1 + 2.0,
             ],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
             position: [
-                surface.rect.bottom_right.0 - 2.0,
-                surface.rect.bottom_right.1 - 2.0,
+                surface.rect.max.0 - 2.0,
+                surface.rect.max.1 - 2.0,
             ],
             color: [1.0, 0.0, 0.0, 1.0],
         });
@@ -87,42 +87,42 @@ impl Widget for BigRectangle {
         use fgui::graphics::Vertex;
 
         surface.backend.add_vertex(Vertex {
-            position: [surface.rect.top_left.0 + 2.0, surface.rect.top_left.1 + 2.0],
+            position: [surface.rect.min.0 + 2.0, surface.rect.min.1 + 2.0],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
             position: [
-                surface.rect.bottom_right.0 - 2.0,
-                surface.rect.top_left.1 + 2.0,
+                surface.rect.max.0 - 2.0,
+                surface.rect.min.1 + 2.0,
             ],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
             position: [
-                surface.rect.top_left.0 + 2.0,
-                surface.rect.bottom_right.1 - 2.0,
+                surface.rect.min.0 + 2.0,
+                surface.rect.max.1 - 2.0,
             ],
             color: [1.0, 0.0, 0.0, 1.0],
         });
 
         surface.backend.add_vertex(Vertex {
             position: [
-                surface.rect.top_left.0 + 2.0,
-                surface.rect.bottom_right.1 - 2.0,
+                surface.rect.min.0 + 2.0,
+                surface.rect.max.1 - 2.0,
             ],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
             position: [
-                surface.rect.bottom_right.0 - 2.0,
-                surface.rect.top_left.1 + 2.0,
+                surface.rect.max.0 - 2.0,
+                surface.rect.min.1 + 2.0,
             ],
             color: [1.0, 0.0, 0.0, 1.0],
         });
         surface.backend.add_vertex(Vertex {
             position: [
-                surface.rect.bottom_right.0 - 2.0,
-                surface.rect.bottom_right.1 - 2.0,
+                surface.rect.max.0 - 2.0,
+                surface.rect.max.1 - 2.0,
             ],
             color: [1.0, 0.0, 0.0, 1.0],
         });

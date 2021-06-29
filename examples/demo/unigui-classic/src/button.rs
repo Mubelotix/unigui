@@ -29,7 +29,7 @@ impl Widget for Button {
         let mut path_builder = Path::builder();
         path_builder.add_rounded_rectangle(
             &lyon::math::Rect::new(
-                point(surface.rect.top_left.0 + 2.5, surface.rect.top_left.1 + 2.5),
+                point(surface.rect.min.0 + 2.5, surface.rect.min.1 + 2.5),
                 size(surface.rect.width() - 5.0, surface.rect.height() - 5.0),
             ),
             &BorderRadii::new(5.0),
