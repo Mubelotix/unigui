@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use fgui::containers::*;
 use fgui::prelude::*;
 
@@ -7,9 +8,8 @@ use unigui_classic::button::Button;
 
 #[derive(Debug)]
 pub struct App {
-    should_render: bool,
+    image_id: RefCell<Option<TextureId>>,
     div: fgui::containers::Div,
-    offset: f32,
 }
 
 impl fgui::App for App {}
@@ -24,17 +24,14 @@ impl App {
         div.add_inline(Box::new(Button {}));
 
         App {
-            should_render: true,
+            image_id: RefCell::new(None),
             div,
-            offset: 0.0,
         }
     }
 }
 
 impl fgui::Widget for App {
-    fn update(&mut self) {
-        self.offset += 0.01;
-    }
+    fn update(&mut self) {}
 
     fn allocate_area(
         &mut self,
@@ -45,6 +42,24 @@ impl fgui::Widget for App {
     }
 
     fn render(&self, surface: Area) {
+        if self.image_id.borrow().is_none() {
+            let texture_bytes = include_bytes!("happy-tree.png");
+            let texture_image = image::load_from_memory(texture_bytes).unwrap();
+            let texture_rgba = texture_image.as_rgba8().unwrap();
+
+            use image::GenericImageView;
+            let dimensions = texture_image.dimensions();
+            let texture_id = surface.backend.create_texture(dimensions, &texture_rgba);
+            *self.image_id.borrow_mut() = Some(texture_id);
+        }
+
+        if let Some(texture_id) = self.image_id.borrow().clone() {
+            surface.backend.add_image(Rect {
+                min: (-1.0, -1.0),
+                max: (1.0, 1.0),
+            }, texture_id)
+        }
+
         self.div.render(surface);
     }
 }
