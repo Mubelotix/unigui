@@ -72,15 +72,18 @@ pub struct WgpuBackend {
     sc_desc: wgpu::SwapChainDescriptor,
     swap_chain: wgpu::SwapChain,
     pub(crate) size: winit::dpi::PhysicalSize<u32>,
+
     render_pipeline: wgpu::RenderPipeline,
-    texture_render_pipeline: wgpu::RenderPipeline,
     vertex_buffer: wgpu::Buffer,
+    vertices: Vec<Vertex>,
+
+    texture_render_pipeline: wgpu::RenderPipeline,
     texture_vertex_buffer: wgpu::Buffer,
+    texture_bind_group: wgpu::BindGroup,
+
     uniforms: Uniforms,
     uniform_buffer: wgpu::Buffer,
-    diffuse_bind_group: wgpu::BindGroup,
     uniform_bind_group: wgpu::BindGroup,
-    vertices: Vec<Vertex>,
 }
 
 const VERTICES: &[TextureVertex] = &[
@@ -134,12 +137,12 @@ impl WgpuBackend {
         let swap_chain = device.create_swap_chain(&surface, &sc_desc);
 
         // Setup texture
-        let diffuse_bytes = include_bytes!("ressources/happy-tree.png");
-        let diffuse_image = image::load_from_memory(diffuse_bytes).unwrap();
-        let diffuse_rgba = diffuse_image.as_rgba8().unwrap();
+        let texture_bytes = include_bytes!("ressources/happy-tree.png");
+        let texture_image = image::load_from_memory(texture_bytes).unwrap();
+        let texture_rgba = texture_image.as_rgba8().unwrap();
 
         use image::GenericImageView;
-        let dimensions = diffuse_image.dimensions();
+        let dimensions = texture_image.dimensions();
 
         let texture_size = wgpu::Extent3d {
             width: dimensions.0,
@@ -147,23 +150,23 @@ impl WgpuBackend {
             depth_or_array_layers: 1,
         };
 
-        let diffuse_texture = device.create_texture(&wgpu::TextureDescriptor {
+        let texture_texture = device.create_texture(&wgpu::TextureDescriptor {
             size: texture_size,
             mip_level_count: 1,
             sample_count: 1,
             dimension: wgpu::TextureDimension::D2,
             format: wgpu::TextureFormat::Rgba8UnormSrgb,
             usage: wgpu::TextureUsage::SAMPLED | wgpu::TextureUsage::COPY_DST,
-            label: Some("diffuse_texture"),
+            label: Some("texture_texture"),
         });
 
         queue.write_texture(
             wgpu::ImageCopyTexture {
-                texture: &diffuse_texture,
+                texture: &texture_texture,
                 mip_level: 0,
                 origin: wgpu::Origin3d::ZERO,
             },
-            diffuse_rgba,
+            texture_rgba,
             wgpu::ImageDataLayout {
                 offset: 0,
                 bytes_per_row: std::num::NonZeroU32::new(4 * dimensions.0),
@@ -172,10 +175,10 @@ impl WgpuBackend {
             texture_size,
         );
 
-        let diffuse_texture_view =
-            diffuse_texture.create_view(&wgpu::TextureViewDescriptor::default());
-        let diffuse_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
-            label: Some("diffuse_sampler"),
+        let texture_texture_view =
+            texture_texture.create_view(&wgpu::TextureViewDescriptor::default());
+        let texture_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+            label: Some("texture_sampler"),
             address_mode_u: wgpu::AddressMode::ClampToEdge,
             address_mode_v: wgpu::AddressMode::ClampToEdge,
             address_mode_w: wgpu::AddressMode::ClampToEdge,
@@ -211,19 +214,19 @@ impl WgpuBackend {
                 label: Some("texture_bind_group_layout"),
             });
 
-        let diffuse_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
+        let texture_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             layout: &texture_bind_group_layout,
             entries: &[
                 wgpu::BindGroupEntry {
                     binding: 0,
-                    resource: wgpu::BindingResource::TextureView(&diffuse_texture_view),
+                    resource: wgpu::BindingResource::TextureView(&texture_texture_view),
                 },
                 wgpu::BindGroupEntry {
                     binding: 1,
-                    resource: wgpu::BindingResource::Sampler(&diffuse_sampler),
+                    resource: wgpu::BindingResource::Sampler(&texture_sampler),
                 },
             ],
-            label: Some("diffuse_bind_group"),
+            label: Some("texture_bind_group"),
         });
 
         // Setup uniforms
@@ -312,30 +315,30 @@ impl WgpuBackend {
             },
         });
 
-        // Setup second pipeline
-        let render_pipeline_layout =
+        // Setup texture render pipeline
+        let texture_render_pipeline_layout =
             device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-                label: Some("Render Pipeline Layout"),
+                label: Some("Texture Render Pipeline Layout"),
                 bind_group_layouts: &[&uniform_bind_group_layout, &texture_bind_group_layout],
                 push_constant_ranges: &[],
             });
 
-        let vs_module =
-            device.create_shader_module(&wgpu::include_spirv!("ressources/texture-shader.vert.spv"));
-        let fs_module =
-            device.create_shader_module(&wgpu::include_spirv!("ressources/texture-shader.frag.spv"));
+        let texture_vs_module = device
+            .create_shader_module(&wgpu::include_spirv!("ressources/texture-shader.vert.spv"));
+        let texture_fs_module = device
+            .create_shader_module(&wgpu::include_spirv!("ressources/texture-shader.frag.spv"));
 
         let texture_render_pipeline =
             device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
                 label: Some("Textured Render Pipeline"),
-                layout: Some(&render_pipeline_layout),
+                layout: Some(&texture_render_pipeline_layout),
                 vertex: wgpu::VertexState {
-                    module: &vs_module,
+                    module: &texture_vs_module,
                     entry_point: "main",
                     buffers: &[TextureVertex::desc()],
                 },
                 fragment: Some(wgpu::FragmentState {
-                    module: &fs_module,
+                    module: &texture_fs_module,
                     entry_point: "main",
                     targets: &[wgpu::ColorTargetState {
                         format: sc_desc.format,
@@ -352,7 +355,7 @@ impl WgpuBackend {
                     front_face: wgpu::FrontFace::Ccw,
                     cull_mode: None,
                     polygon_mode: wgpu::PolygonMode::Fill,
-                    clamp_depth: false, // Might be useful later
+                    clamp_depth: false,
                     conservative: false,
                 },
                 depth_stencil: None,
@@ -384,15 +387,18 @@ impl WgpuBackend {
             sc_desc,
             swap_chain,
             size,
+
             render_pipeline,
-            texture_render_pipeline,
             vertex_buffer,
+            vertices: Vec::new(),
+
+            texture_render_pipeline,
             texture_vertex_buffer,
+            texture_bind_group,
+
             uniforms,
             uniform_buffer,
             uniform_bind_group,
-            diffuse_bind_group,
-            vertices: Vec::new(),
         }
     }
 
@@ -454,7 +460,7 @@ impl WgpuBackend {
 
         render_pass.set_pipeline(&self.texture_render_pipeline);
         render_pass.set_bind_group(0, &self.uniform_bind_group, &[]);
-        render_pass.set_bind_group(1, &self.diffuse_bind_group, &[]);
+        render_pass.set_bind_group(1, &self.texture_bind_group, &[]);
         render_pass.set_vertex_buffer(0, self.texture_vertex_buffer.slice(..));
         render_pass.draw(0..VERTICES.len() as u32, 0..1);
 
