@@ -294,9 +294,9 @@ impl WgpuBackend {
             });
 
         let vs_module =
-            device.create_shader_module(&wgpu::include_spirv!("shaders/shader.vert.spv"));
+            device.create_shader_module(&wgpu::include_spirv!("ressources/shader.vert.spv"));
         let fs_module =
-            device.create_shader_module(&wgpu::include_spirv!("shaders/shader.frag.spv"));
+            device.create_shader_module(&wgpu::include_spirv!("ressources/shader.frag.spv"));
 
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
@@ -344,9 +344,9 @@ impl WgpuBackend {
             });
 
         let vs_module =
-            device.create_shader_module(&wgpu::include_spirv!("shaders/texture-shader.vert.spv"));
+            device.create_shader_module(&wgpu::include_spirv!("ressources/texture-shader.vert.spv"));
         let fs_module =
-            device.create_shader_module(&wgpu::include_spirv!("shaders/texture-shader.frag.spv"));
+            device.create_shader_module(&wgpu::include_spirv!("ressources/texture-shader.frag.spv"));
 
         let texture_render_pipeline =
             device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
