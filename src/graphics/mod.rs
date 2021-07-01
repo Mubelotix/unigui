@@ -2,6 +2,7 @@ use wgpu::util::DeviceExt;
 use winit::window::Window;
 pub mod texture;
 use crate::prelude::*;
+use std::mem::size_of;
 pub use texture::TextureId;
 
 #[inline]
@@ -21,7 +22,7 @@ pub struct Vertex {
 impl Vertex {
     const fn desc<'a>() -> wgpu::VertexBufferLayout<'a> {
         wgpu::VertexBufferLayout {
-            array_stride: std::mem::size_of::<Vertex>() as wgpu::BufferAddress,
+            array_stride: size_of::<Vertex>() as wgpu::BufferAddress,
             step_mode: wgpu::InputStepMode::Vertex,
             attributes: &[
                 wgpu::VertexAttribute {
@@ -30,7 +31,7 @@ impl Vertex {
                     format: wgpu::VertexFormat::Float32x2,
                 },
                 wgpu::VertexAttribute {
-                    offset: std::mem::size_of::<[f32; 2]>() as wgpu::BufferAddress,
+                    offset: size_of::<[f32; 2]>() as wgpu::BufferAddress,
                     shader_location: 1,
                     format: wgpu::VertexFormat::Float32x4,
                 },
@@ -48,9 +49,8 @@ struct TextureVertex {
 
 impl TextureVertex {
     fn desc<'a>() -> wgpu::VertexBufferLayout<'a> {
-        use std::mem;
         wgpu::VertexBufferLayout {
-            array_stride: mem::size_of::<TextureVertex>() as wgpu::BufferAddress,
+            array_stride: size_of::<TextureVertex>() as wgpu::BufferAddress,
             step_mode: wgpu::InputStepMode::Vertex,
             attributes: &[
                 wgpu::VertexAttribute {
@@ -59,9 +59,9 @@ impl TextureVertex {
                     format: wgpu::VertexFormat::Float32x2,
                 },
                 wgpu::VertexAttribute {
-                    offset: mem::size_of::<[f32; 2]>() as wgpu::BufferAddress,
+                    offset: size_of::<[f32; 2]>() as wgpu::BufferAddress,
                     shader_location: 1,
-                    format: wgpu::VertexFormat::Float32x2, // NEW!
+                    format: wgpu::VertexFormat::Float32x2,
                 },
             ],
         }
@@ -533,7 +533,6 @@ impl WgpuBackend {
                 if *self.images[image_id].0.id == *id {
                     render_pass.set_bind_group(1, texture_bind_group, &[]);
                     while *self.images[image_id].0.id == *id {
-                        use std::mem::size_of;
                         render_pass.draw(
                             (image_id * 6 * size_of::<TextureVertex>()) as u32
                                 ..((image_id + 1) * 6 * size_of::<TextureVertex>()) as u32,
