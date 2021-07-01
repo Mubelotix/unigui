@@ -8,3 +8,6 @@ pub mod widget;
 
 pub use app::run;
 pub use prelude::*;
+
+pub use glyph_brush;
+pub use glyph_brush::ab_glyph;
