@@ -556,3 +556,21 @@ impl WgpuBackend {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_coords_conversion() {
+        assert_eq!(screen_coords_to_wgpu((0.0, 0.0), (21654, 212)), (-1.0, 1.0));
+        assert_eq!(screen_coords_to_wgpu((21654.0, 212.0), (21654, 212)), (1.0, -1.0));
+        
+        assert_eq!(screen_coords_to_wgpu((0.0, 50.0), (100, 100)), (-1.0, 0.0));
+        assert_eq!(screen_coords_to_wgpu((50.0, 50.0), (100, 100)), (0.0, 0.0));
+        assert_eq!(screen_coords_to_wgpu((100.0, 50.0), (100, 100)), (1.0, 0.0));
+
+        assert_eq!(screen_coords_to_wgpu((50.0, 0.0), (100, 100)), (0.0, 1.0));
+        assert_eq!(screen_coords_to_wgpu((50.0, 100.0), (100, 100)), (0.0, -1.0));
+    }
+}
