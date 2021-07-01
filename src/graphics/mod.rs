@@ -82,41 +82,18 @@ pub struct WgpuBackend {
     uniform_bind_group: wgpu::BindGroup,
     vertices: Vec<Vertex>,
 }
-/*
-const VERTICES2: &[TextureVertex] = &[
-    TextureVertex {
-        position: [-0.0868241, 0.49240386, 0.0],
-        tex_coords: [0.4131759, 0.00759614],
-    }, // A 0
-    TextureVertex {
-        position: [-0.49513406, 0.06958647, 0.0],
-        tex_coords: [0.0048659444, 0.43041354],
-    }, // B 1
-    TextureVertex {
-        position: [-0.21918549, -0.44939706, 0.0],
-        tex_coords: [0.28081453, 0.949397057],
-    }, // C 2
-    TextureVertex {
-        position: [0.35966998, -0.3473291, 0.0],
-        tex_coords: [0.85967, 0.84732911],
-    }, // D 3 
-    TextureVertex {
-        position: [0.44147372, 0.2347359, 0.0],
-        tex_coords: [0.9414737, 0.2652641],
-    }, // E 4
-];
-*/
+
 const VERTICES: &[TextureVertex] = &[
     TextureVertex {
-        position: [0.0, 0.0],
+        position: [-1.0, 1.0],
         tex_coords: [0.0, 0.0],
     },
     TextureVertex {
-        position: [100.0, 0.0],
+        position: [1.0, 1.0],
         tex_coords: [1.0, 0.0],
     },
     TextureVertex {
-        position: [0.0, 100.0],
+        position: [-1.0, -1.0],
         tex_coords: [0.0, 1.0],
     },
 ];
