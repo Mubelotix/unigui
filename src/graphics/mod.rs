@@ -4,6 +4,13 @@ pub mod texture;
 use crate::prelude::*;
 pub use texture::TextureId;
 
+#[inline]
+fn screen_coords_to_wgpu((x, y): (f32, f32), screen_size: (u32, u32)) -> (f32, f32) {
+    let x = (2.0 / screen_size.0 as f32) * x - 1.0;
+    let y = (2.0 / screen_size.1 as f32) * y - 1.0;
+    (x, -y)
+}
+
 #[repr(C)]
 #[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
 pub struct Vertex {
@@ -414,7 +421,9 @@ impl WgpuBackend {
         self.vertices.push(vertex);
     }
 
-    pub fn add_image(&mut self, rect: Rect, texture_id: TextureId) {
+    pub fn add_image(&mut self, mut rect: Rect, texture_id: TextureId) {
+        rect.min = screen_coords_to_wgpu(rect.min, (self.size.width, self.size.height));
+        rect.max = screen_coords_to_wgpu(rect.max, (self.size.width, self.size.height));
         self.images.push((texture_id, rect));
     }
 
