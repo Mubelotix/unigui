@@ -418,7 +418,7 @@ impl WgpuBackend {
     }
 
     /**
-    Adds a [Vertex] to the buffer.  
+    Adds a [Vertex] to the buffer.
     It will be drawn at the next frame and then removed.
     **/
     pub fn add_vertex(&mut self, vertex: Vertex) {
@@ -426,7 +426,7 @@ impl WgpuBackend {
     }
 
     /**
-    Draws an image at the specified position.  
+    Draws an image at the specified position.
     A [TextureId] can be obtained with [WgpuBackend::create_texture].
     **/
     pub fn add_image(&mut self, mut position: Rect, texture_id: TextureId) {
@@ -434,9 +434,9 @@ impl WgpuBackend {
         position.max = screen_coords_to_wgpu(position.max, (self.size.width, self.size.height));
         self.images.push((texture_id, position));
     }
-    
+
     /**
-    Creates a new texture that will be destroyed once all clones of the returned [TextureId] are dropped.  
+    Creates a new texture that will be destroyed once all clones of the returned [TextureId] are dropped.
     Panics if the image data is not consistent with the indicated image dimensions (its len must be `4*width*height` bytes).
     **/
     pub fn create_texture(&mut self, image_dimensions: (u32, u32), image_rgba: &[u8]) -> TextureId {
@@ -572,13 +572,19 @@ mod tests {
     #[test]
     fn test_coords_conversion() {
         assert_eq!(screen_coords_to_wgpu((0.0, 0.0), (21654, 212)), (-1.0, 1.0));
-        assert_eq!(screen_coords_to_wgpu((21654.0, 212.0), (21654, 212)), (1.0, -1.0));
-        
+        assert_eq!(
+            screen_coords_to_wgpu((21654.0, 212.0), (21654, 212)),
+            (1.0, -1.0)
+        );
+
         assert_eq!(screen_coords_to_wgpu((0.0, 50.0), (100, 100)), (-1.0, 0.0));
         assert_eq!(screen_coords_to_wgpu((50.0, 50.0), (100, 100)), (0.0, 0.0));
         assert_eq!(screen_coords_to_wgpu((100.0, 50.0), (100, 100)), (1.0, 0.0));
 
         assert_eq!(screen_coords_to_wgpu((50.0, 0.0), (100, 100)), (0.0, 1.0));
-        assert_eq!(screen_coords_to_wgpu((50.0, 100.0), (100, 100)), (0.0, -1.0));
+        assert_eq!(
+            screen_coords_to_wgpu((50.0, 100.0), (100, 100)),
+            (0.0, -1.0)
+        );
     }
 }

@@ -1,6 +1,6 @@
-use std::cell::RefCell;
 use fgui::containers::*;
 use fgui::prelude::*;
+use std::cell::RefCell;
 
 #[path = "unigui-classic/src/lib.rs"]
 mod unigui_classic;
@@ -54,7 +54,9 @@ impl fgui::Widget for App {
         }
 
         if let Some(texture_id) = self.image_id.borrow().clone() {
-            surface.backend.add_image(Rect::sized(500.0, 0.0, 100.0, 100.0), texture_id)
+            surface
+                .backend
+                .add_image(Rect::sized(500.0, 0.0, 100.0, 100.0), texture_id)
         }
 
         self.div.render(surface);
