@@ -12,7 +12,7 @@ pub fn run<App: crate::app::App + 'static>(mut app: App) -> ! {
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new().build(&event_loop).unwrap();
 
-    let mut state = futures::executor::block_on(WgpuBackend::new(&window));
+    let mut state = futures::executor::block_on(WgpuBackend::new(&window, include_bytes!("graphics/ressources/Inconsolata-Regular.ttf")));
     let mut window_size = window.inner_size();
 
     event_loop.run(move |event, _, control_flow| match event {

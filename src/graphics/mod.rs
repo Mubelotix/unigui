@@ -68,6 +68,63 @@ impl TextureVertex {
     }
 }
 
+#[derive(Debug, Clone)]
+struct TextVertex {
+    position: Rect,
+    tex_coords: Rect,
+}
+
+impl TextVertex {
+    fn from_glyph_vertex(
+        glyph_brush::GlyphVertex {
+            tex_coords,
+            pixel_coords,
+            bounds: _,
+            extra,
+        }: glyph_brush::GlyphVertex,
+        screen_size: (u32, u32)
+    ) -> Self {
+        TextVertex {
+            position: Rect {
+                min: screen_coords_to_wgpu((pixel_coords.min.x, pixel_coords.min.y), screen_size),
+                max: screen_coords_to_wgpu((pixel_coords.max.x, pixel_coords.max.y), screen_size),
+            },
+            tex_coords: Rect {
+                min: (tex_coords.min.x, tex_coords.min.y),
+                max: (tex_coords.max.x, tex_coords.max.y),
+            },
+        }
+    }
+
+    fn into_vertices(self, vertices: &mut Vec<TextureVertex>) {
+        vertices.push(TextureVertex {
+            position: [self.position.max.0, self.position.min.1],
+            tex_coords: [self.tex_coords.max.0, self.tex_coords.min.1],
+        });
+        vertices.push(TextureVertex {
+            position: [self.position.min.0, self.position.max.1],
+            tex_coords: [self.tex_coords.min.0, self.tex_coords.max.1],
+        });
+        vertices.push(TextureVertex {
+            position: [self.position.min.0, self.position.min.1],
+            tex_coords: [self.tex_coords.min.0, self.tex_coords.min.1],
+        });
+
+        vertices.push(TextureVertex {
+            position: [self.position.max.0, self.position.min.1],
+            tex_coords: [self.tex_coords.max.0, self.tex_coords.min.1],
+        });
+        vertices.push(TextureVertex {
+            position: [self.position.min.0, self.position.max.1],
+            tex_coords: [self.tex_coords.min.0, self.tex_coords.max.1],
+        });
+        vertices.push(TextureVertex {
+            position: [self.position.max.0, self.position.max.1],
+            tex_coords: [self.tex_coords.max.0, self.tex_coords.max.1],
+        });
+    }
+}
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]
 struct Uniforms {
@@ -95,13 +152,21 @@ pub struct WgpuBackend {
     texture_id_counter: usize,
     images: Vec<(TextureId, Rect)>,
 
+    glyph_brush: glyph_brush::GlyphBrush<TextVertex>,
+    text_texture: wgpu::Texture,
+    text_texture_size: wgpu::Extent3d,
+    text_bind_group: wgpu::BindGroup,
+    text_vertex_buffer: wgpu::Buffer,
+    last_text_vertices_count: u32,
+    has_text: bool,
+
     uniforms: Uniforms,
     uniform_buffer: wgpu::Buffer,
     uniform_bind_group: wgpu::BindGroup,
 }
 
 impl WgpuBackend {
-    pub(crate) async fn new(window: &Window) -> Self {
+    pub(crate) async fn new(window: &Window, default_font: &'static [u8]) -> Self {
         let size = window.inner_size();
 
         let instance = wgpu::Instance::new(wgpu::BackendBit::PRIMARY);
@@ -324,6 +389,49 @@ impl WgpuBackend {
             usage: wgpu::BufferUsage::VERTEX | wgpu::BufferUsage::COPY_DST,
         });
 
+        let text_vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("Text Vertex Buffer"),
+            contents: &data,
+            usage: wgpu::BufferUsage::VERTEX | wgpu::BufferUsage::COPY_DST,
+        });
+
+        // Setup text rendering
+        let font = ab_glyph::FontArc::try_from_slice(default_font).expect("Failed to parse font");
+        let glyph_brush = glyph_brush::GlyphBrushBuilder::using_font(font).build();
+
+        let text_texture_size = wgpu::Extent3d {
+            width: glyph_brush.texture_dimensions().0,
+            height: glyph_brush.texture_dimensions().1,
+            depth_or_array_layers: 1,
+        };
+
+        let text_texture = device.create_texture(&wgpu::TextureDescriptor {
+            size: text_texture_size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: wgpu::TextureDimension::D2,
+            format: wgpu::TextureFormat::R8Unorm,
+            usage: wgpu::TextureUsage::SAMPLED | wgpu::TextureUsage::COPY_DST,
+            label: Some("Text Texture"),
+        });
+
+        let text_view = text_texture.create_view(&wgpu::TextureViewDescriptor::default());
+
+        let text_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
+            layout: &texture_bind_group_layout,
+            entries: &[
+                wgpu::BindGroupEntry {
+                    binding: 0,
+                    resource: wgpu::BindingResource::TextureView(&text_view),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 1,
+                    resource: wgpu::BindingResource::Sampler(&texture_sampler),
+                },
+            ],
+            label: Some("texture_bind_group"),
+        });
+
         Self {
             surface,
             device,
@@ -343,6 +451,14 @@ impl WgpuBackend {
             texture_bind_group_layout,
             texture_bind_groups: Vec::new(),
             images: Vec::new(),
+
+            text_texture,
+            text_vertex_buffer,
+            text_bind_group,
+            glyph_brush,
+            has_text: false,
+            text_texture_size,
+            last_text_vertices_count: 0,
 
             uniforms,
             uniform_buffer,
@@ -423,6 +539,15 @@ impl WgpuBackend {
     **/
     pub fn add_vertex(&mut self, vertex: Vertex) {
         self.vertices.push(vertex);
+    }
+
+    /**
+    Draws a text [Section](glyph_brush::Section).
+    The text will be rasterized by [ab_glyph] and cached by [glyph_brush].
+    **/
+    pub fn add_text(&mut self, text: glyph_brush::Section) {
+        self.has_text = true;
+        self.glyph_brush.queue(text);
     }
 
     /**
@@ -553,6 +678,68 @@ impl WgpuBackend {
                     }
                 }
             }
+        }
+
+        if self.has_text {
+            render_pass.set_vertex_buffer(0, self.text_vertex_buffer.slice(..));
+            render_pass.set_bind_group(1, &self.text_bind_group, &[]);
+
+            let queue = &self.queue;
+            let text_texture = &self.text_texture;
+            let screen_size = (self.size.width, self.size.height);
+
+            let update_texture = |rect: glyph_brush::Rectangle<u32>, tex_data: &[u8]| {
+                let width = rect.max[0] - rect.min[0];
+                let height = rect.max[1] - rect.min[1];
+
+                queue.write_texture(
+                    wgpu::ImageCopyTexture {
+                        texture: text_texture,
+                        mip_level: 0,
+                        origin: wgpu::Origin3d {
+                            x: rect.min[0],
+                            y: rect.min[1],
+                            z: 0,
+                        },
+                    },
+                    &tex_data,
+                    wgpu::ImageDataLayout {
+                        offset: 0,
+                        bytes_per_row: std::num::NonZeroU32::new(width),
+                        rows_per_image: std::num::NonZeroU32::new(height),
+                    },
+                    wgpu::Extent3d {
+                        width,
+                        height,
+                        depth_or_array_layers: 1,
+                    },
+                );
+            };
+
+            match self.glyph_brush.process_queued(
+                |rect, tex_data| update_texture(rect, tex_data),
+                |vertex| TextVertex::from_glyph_vertex(vertex, screen_size),
+            ) {
+                Ok(glyph_brush::BrushAction::Draw(quad_vertices)) => {
+                    let mut vertices = Vec::new();
+
+                    for quad_vertex in quad_vertices {
+                        quad_vertex.into_vertices(&mut vertices);
+                    }
+                    self.last_text_vertices_count = vertices.len() as u32;
+                    queue.write_buffer(&self.text_vertex_buffer, 0, bytemuck::cast_slice(&vertices));
+
+                    render_pass.draw(0..self.last_text_vertices_count, 0..1);
+                }
+                Ok(glyph_brush::BrushAction::ReDraw) => {
+                    render_pass.draw(0..self.last_text_vertices_count, 0..1);
+                }
+                Err(glyph_brush::BrushError::TextureTooSmall { suggested }) => {
+                    todo!()
+                }
+            }
+
+            self.has_text = false;
         }
 
         std::mem::drop(render_pass);

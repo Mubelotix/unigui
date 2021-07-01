@@ -8,6 +8,7 @@ edition = "2018"
 winit = "0.25"
 wgpu = "0.9"
 futures = "0.3"
+glyph_brush = "0.7"
 bytemuck = { version = "1.5", features = [ "derive" ] }
 
 [build-dependencies]
