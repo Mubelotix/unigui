@@ -4,12 +4,9 @@ version = "0.1.0"
 authors = ["Mubelotix <mubelotix@gmail.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 winit = "0.25"
-wgpu = "0.9" # TODO: Do we need the "vulkan-portability" feature?
-env_logger = "0.8" # TODO: Remove this
+wgpu = "0.9"
 futures = "0.3"
 bytemuck = { version = "1.5", features = [ "derive" ] }
 
@@ -22,3 +19,4 @@ shaderc = "0.7"
 [dev-dependencies]
 lyon = "0.17"
 image = "0.23"
+env_logger = "0.8"
