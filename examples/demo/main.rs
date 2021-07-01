@@ -54,10 +54,7 @@ impl fgui::Widget for App {
         }
 
         if let Some(texture_id) = self.image_id.borrow().clone() {
-            surface.backend.add_image(Rect {
-                min: (500.0, 0.0),
-                max: (600.0, 100.0),
-            }, texture_id)
+            surface.backend.add_image(Rect::sized(500.0, 0.0, 100.0, 100.0), texture_id)
         }
 
         self.div.render(surface);
