@@ -535,7 +535,6 @@ impl WgpuBackend {
         if !self.images.is_empty() {
             render_pass.set_pipeline(&self.texture_render_pipeline);
             render_pass.set_vertex_buffer(0, self.texture_vertex_buffer.slice(..));
-            render_pass.set_bind_group(0, &self.uniform_bind_group, &[]); // Is this required?
 
             let mut image_id = 0;
             'image_rendering: for (id, _, _, texture_bind_group) in &self.texture_bind_groups {
