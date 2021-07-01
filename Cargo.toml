@@ -12,6 +12,7 @@ wgpu = "0.9" # TODO: Do we need the "vulkan-portability" feature?
 env_logger = "0.8" # TODO: Remove this
 futures = "0.3"
 bytemuck = { version = "1.5", features = [ "derive" ] }
+image = "0.23" # TODO: Remove this
 
 [build-dependencies]
 anyhow = "1.0"
