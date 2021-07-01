@@ -135,7 +135,7 @@ impl WgpuBackend {
         };
         let swap_chain = device.create_swap_chain(&surface, &sc_desc);
 
-        // Setup texture
+        // Setup textures
         let texture_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
             label: Some("Texture Sampler"),
             address_mode_u: wgpu::AddressMode::ClampToEdge,
@@ -417,18 +417,27 @@ impl WgpuBackend {
             });
     }
 
+    /**
+    Adds a [Vertex] to the buffer.  
+    It will be drawn at the next frame and then removed.
+    **/
     pub fn add_vertex(&mut self, vertex: Vertex) {
         self.vertices.push(vertex);
     }
 
-    pub fn add_image(&mut self, mut rect: Rect, texture_id: TextureId) {
-        rect.min = screen_coords_to_wgpu(rect.min, (self.size.width, self.size.height));
-        rect.max = screen_coords_to_wgpu(rect.max, (self.size.width, self.size.height));
-        self.images.push((texture_id, rect));
-    }
-
     /**
-    Creates a new texture that will be destroyed once all clones of the returned [TextureId] are dropped.
+    Draws an image at the specified position.  
+    A [TextureId] can be obtained with [WgpuBackend::create_texture].
+    **/
+    pub fn add_image(&mut self, mut position: Rect, texture_id: TextureId) {
+        position.min = screen_coords_to_wgpu(position.min, (self.size.width, self.size.height));
+        position.max = screen_coords_to_wgpu(position.max, (self.size.width, self.size.height));
+        self.images.push((texture_id, position));
+    }
+    
+    /**
+    Creates a new texture that will be destroyed once all clones of the returned [TextureId] are dropped.  
+    Panics if the image data is not consistent with the indicated image dimensions (its len must be `4*width*height` bytes).
     **/
     pub fn create_texture(&mut self, image_dimensions: (u32, u32), image_rgba: &[u8]) -> TextureId {
         assert_eq!(
