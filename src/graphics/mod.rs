@@ -526,6 +526,7 @@ impl WgpuBackend {
         self.queue
             .write_buffer(&self.vertex_buffer, 0, bytemuck::cast_slice(&self.vertices));
 
+        // Generate textured vertices
         self.images.sort_by_key(|(id, _)| *id.id);
         let mut texture_vertices = Vec::with_capacity(6 * self.images.len());
         for (_, rect) in &self.images {
@@ -560,6 +561,63 @@ impl WgpuBackend {
             0,
             bytemuck::cast_slice(&texture_vertices),
         );
+
+        // Update text rendering data
+        if self.has_text {
+            let queue = &self.queue;
+            let text_texture = &self.text_texture;
+
+            let update_texture = |rect: glyph_brush::Rectangle<u32>, tex_data: &[u8]| {
+                let width = rect.max[0] - rect.min[0];
+                let height = rect.max[1] - rect.min[1];
+
+                queue.write_texture(
+                    wgpu::ImageCopyTexture {
+                        texture: text_texture,
+                        mip_level: 0,
+                        origin: wgpu::Origin3d {
+                            x: rect.min[0],
+                            y: rect.min[1],
+                            z: 0,
+                        },
+                    },
+                    &tex_data,
+                    wgpu::ImageDataLayout {
+                        offset: 0,
+                        bytes_per_row: std::num::NonZeroU32::new(width),
+                        rows_per_image: std::num::NonZeroU32::new(height),
+                    },
+                    wgpu::Extent3d {
+                        width,
+                        height,
+                        depth_or_array_layers: 1,
+                    },
+                );
+            };
+
+            match self.glyph_brush.process_queued(
+                |rect, tex_data| update_texture(rect, tex_data),
+                TextVertex::from_glyph_vertex,
+            ) {
+                Ok(glyph_brush::BrushAction::Draw(quad_vertices)) => {
+                    let mut vertices = Vec::new();
+
+                    for quad_vertex in quad_vertices {
+                        quad_vertex.into_vertices(&mut vertices);
+                    }
+                    self.last_text_vertices_count = vertices.len() as u32;
+                    queue.write_buffer(
+                        &self.text_vertex_buffer,
+                        0,
+                        bytemuck::cast_slice(&vertices),
+                    );
+                }
+                Ok(glyph_brush::BrushAction::ReDraw) => {}
+                Err(glyph_brush::BrushError::TextureTooSmall { suggested }) => {
+                    todo!()
+                }
+            }
+        }
 
         // Sweep unused textures
         self.texture_bind_groups
@@ -724,64 +782,7 @@ impl WgpuBackend {
             render_pass.set_pipeline(&self.text_render_pipeline);
             render_pass.set_bind_group(1, &self.text_bind_group, &[]);
             render_pass.set_vertex_buffer(0, self.text_vertex_buffer.slice(..));
-
-            let queue = &self.queue;
-            let text_texture = &self.text_texture;
-
-            let update_texture = |rect: glyph_brush::Rectangle<u32>, tex_data: &[u8]| {
-                let width = rect.max[0] - rect.min[0];
-                let height = rect.max[1] - rect.min[1];
-
-                queue.write_texture(
-                    wgpu::ImageCopyTexture {
-                        texture: text_texture,
-                        mip_level: 0,
-                        origin: wgpu::Origin3d {
-                            x: rect.min[0],
-                            y: rect.min[1],
-                            z: 0,
-                        },
-                    },
-                    &tex_data,
-                    wgpu::ImageDataLayout {
-                        offset: 0,
-                        bytes_per_row: std::num::NonZeroU32::new(width),
-                        rows_per_image: std::num::NonZeroU32::new(height),
-                    },
-                    wgpu::Extent3d {
-                        width,
-                        height,
-                        depth_or_array_layers: 1,
-                    },
-                );
-            };
-
-            match self.glyph_brush.process_queued(
-                |rect, tex_data| update_texture(rect, tex_data),
-                TextVertex::from_glyph_vertex,
-            ) {
-                Ok(glyph_brush::BrushAction::Draw(quad_vertices)) => {
-                    let mut vertices = Vec::new();
-
-                    for quad_vertex in quad_vertices {
-                        quad_vertex.into_vertices(&mut vertices);
-                    }
-                    self.last_text_vertices_count = vertices.len() as u32;
-                    queue.write_buffer(
-                        &self.text_vertex_buffer,
-                        0,
-                        bytemuck::cast_slice(&vertices),
-                    );
-
-                    render_pass.draw(0..self.last_text_vertices_count, 0..1);
-                }
-                Ok(glyph_brush::BrushAction::ReDraw) => {
-                    render_pass.draw(0..self.last_text_vertices_count, 0..1);
-                }
-                Err(glyph_brush::BrushError::TextureTooSmall { suggested }) => {
-                    todo!()
-                }
-            }
+            render_pass.draw(0..self.last_text_vertices_count, 0..1);
 
             self.has_text = false;
         }
