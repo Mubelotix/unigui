@@ -60,5 +60,11 @@ impl Widget for Button {
             };
             surface.backend.add_vertex(vertex);
         }
+
+        surface.backend.add_text(
+            glyph_brush::Section::default()
+                .with_screen_position((surface.rect.min.0 + 8.0, surface.rect.min.1 + 4.0))
+                .add_text(glyph_brush::Text::new("Button!").with_color([1.0, 1.0, 1.0, 1.0])),
+        );
     }
 }
