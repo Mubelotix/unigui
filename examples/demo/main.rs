@@ -62,7 +62,7 @@ impl fgui::Widget for App {
         surface
             .backend
             .add_text(glyph_brush::Section::default().add_text(
-                glyph_brush::Text::new("The last word was ").with_color([0.0, 0.0, 0.0, 1.0]),
+                glyph_brush::Text::new("The last word was ").with_color([0.0, 0.0, 1.0, 1.0]),
             ));
 
         self.div.render(surface);

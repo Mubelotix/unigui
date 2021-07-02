@@ -68,10 +68,45 @@ impl TextureVertex {
     }
 }
 
+#[repr(C)]
+#[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
+struct TextTextureVertex {
+    position: [f32; 2],
+    tex_coords: [f32; 2],
+    color: [f32; 4],
+}
+
+impl TextTextureVertex {
+    fn desc<'a>() -> wgpu::VertexBufferLayout<'a> {
+        wgpu::VertexBufferLayout {
+            array_stride: size_of::<TextTextureVertex>() as wgpu::BufferAddress,
+            step_mode: wgpu::InputStepMode::Vertex,
+            attributes: &[
+                wgpu::VertexAttribute {
+                    offset: 0,
+                    shader_location: 0,
+                    format: wgpu::VertexFormat::Float32x2,
+                },
+                wgpu::VertexAttribute {
+                    offset: size_of::<[f32; 2]>() as wgpu::BufferAddress,
+                    shader_location: 1,
+                    format: wgpu::VertexFormat::Float32x2,
+                },
+                wgpu::VertexAttribute {
+                    offset: size_of::<[f32; 4]>() as wgpu::BufferAddress,
+                    shader_location: 2,
+                    format: wgpu::VertexFormat::Float32x4,
+                },
+            ],
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 struct TextVertex {
     position: Rect,
     tex_coords: Rect,
+    color: [f32; 4],
 }
 
 impl TextVertex {
@@ -92,34 +127,41 @@ impl TextVertex {
                 min: (tex_coords.min.x, tex_coords.min.y),
                 max: (tex_coords.max.x, tex_coords.max.y),
             },
+            color: extra.color,
         }
     }
 
-    fn into_vertices(self, vertices: &mut Vec<TextureVertex>) {
-        vertices.push(TextureVertex {
+    fn into_vertices(self, vertices: &mut Vec<TextTextureVertex>) {
+        vertices.push(TextTextureVertex {
             position: [self.position.max.0, self.position.min.1],
             tex_coords: [self.tex_coords.max.0, self.tex_coords.min.1],
+            color: self.color,
         });
-        vertices.push(TextureVertex {
+        vertices.push(TextTextureVertex {
             position: [self.position.min.0, self.position.max.1],
             tex_coords: [self.tex_coords.min.0, self.tex_coords.max.1],
+            color: self.color,
         });
-        vertices.push(TextureVertex {
+        vertices.push(TextTextureVertex {
             position: [self.position.min.0, self.position.min.1],
             tex_coords: [self.tex_coords.min.0, self.tex_coords.min.1],
+            color: self.color,
         });
 
-        vertices.push(TextureVertex {
+        vertices.push(TextTextureVertex {
             position: [self.position.max.0, self.position.min.1],
             tex_coords: [self.tex_coords.max.0, self.tex_coords.min.1],
+            color: self.color,
         });
-        vertices.push(TextureVertex {
+        vertices.push(TextTextureVertex {
             position: [self.position.min.0, self.position.max.1],
             tex_coords: [self.tex_coords.min.0, self.tex_coords.max.1],
+            color: self.color,
         });
-        vertices.push(TextureVertex {
+        vertices.push(TextTextureVertex {
             position: [self.position.max.0, self.position.max.1],
             tex_coords: [self.tex_coords.max.0, self.tex_coords.max.1],
+            color: self.color,
         });
     }
 }
@@ -387,7 +429,7 @@ impl WgpuBackend {
             vertex: wgpu::VertexState {
                 module: &text_vs_module,
                 entry_point: "main",
-                buffers: &[TextureVertex::desc()],
+                buffers: &[TextTextureVertex::desc()],
             },
             fragment: Some(wgpu::FragmentState {
                 module: &text_fs_module,
@@ -805,11 +847,7 @@ impl WgpuBackend {
                 if *self.images[image_id].0.id == *id {
                     render_pass.set_bind_group(1, texture_bind_group, &[]);
                     while *self.images[image_id].0.id == *id {
-                        render_pass.draw(
-                            (image_id * 6 * size_of::<TextureVertex>()) as u32
-                                ..((image_id + 1) * 6 * size_of::<TextureVertex>()) as u32,
-                            0..1,
-                        );
+                        render_pass.draw((image_id * 6) as u32..((image_id + 1) * 6) as u32, 0..1);
                         image_id += 1;
                         if image_id >= self.images.len() {
                             break 'image_rendering;
