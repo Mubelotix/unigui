@@ -82,7 +82,7 @@ impl TextVertex {
             bounds: _,
             extra,
         }: glyph_brush::GlyphVertex,
-        screen_size: (u32, u32)
+        screen_size: (u32, u32),
     ) -> Self {
         TextVertex {
             position: Rect {
@@ -152,10 +152,11 @@ pub struct WgpuBackend {
     texture_id_counter: usize,
     images: Vec<(TextureId, Rect)>,
 
-    glyph_brush: glyph_brush::GlyphBrush<TextVertex>,
+    text_render_pipeline: wgpu::RenderPipeline,
+    text_vertex_buffer: wgpu::Buffer,
     text_texture: wgpu::Texture,
     text_bind_group: wgpu::BindGroup,
-    text_vertex_buffer: wgpu::Buffer,
+    glyph_brush: glyph_brush::GlyphBrush<TextVertex>,
     last_text_vertices_count: u32,
     has_text: bool,
 
@@ -338,7 +339,7 @@ impl WgpuBackend {
 
         let texture_render_pipeline =
             device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-                label: Some("Textured Render Pipeline"),
+                label: Some("Texture Render Pipeline"),
                 layout: Some(&texture_render_pipeline_layout),
                 vertex: wgpu::VertexState {
                     module: &texture_vs_module,
@@ -373,6 +374,56 @@ impl WgpuBackend {
                     alpha_to_coverage_enabled: false,
                 },
             });
+
+        // Setup text render pipeline
+        let text_render_pipeline_layout =
+            device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+                label: Some("Text Render Pipeline Layout"),
+                bind_group_layouts: &[&uniform_bind_group_layout, &texture_bind_group_layout],
+                push_constant_ranges: &[],
+            });
+
+        let text_vs_module = device
+            .create_shader_module(&wgpu::include_spirv!("ressources/text-shader.vert.spv"));
+        let text_fs_module = device
+            .create_shader_module(&wgpu::include_spirv!("ressources/text-shader.frag.spv"));
+
+        let text_render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+            label: Some("Text Render Pipeline"),
+            layout: Some(&text_render_pipeline_layout),
+            vertex: wgpu::VertexState {
+                module: &text_vs_module,
+                entry_point: "main",
+                buffers: &[TextureVertex::desc()],
+            },
+            fragment: Some(wgpu::FragmentState {
+                module: &text_fs_module,
+                entry_point: "main",
+                targets: &[wgpu::ColorTargetState {
+                    format: sc_desc.format,
+                    blend: Some(wgpu::BlendState {
+                        alpha: wgpu::BlendComponent::REPLACE,
+                        color: wgpu::BlendComponent::REPLACE,
+                    }),
+                    write_mask: wgpu::ColorWrite::ALL,
+                }],
+            }),
+            primitive: wgpu::PrimitiveState {
+                topology: wgpu::PrimitiveTopology::TriangleList,
+                strip_index_format: None,
+                front_face: wgpu::FrontFace::Ccw,
+                cull_mode: None,
+                polygon_mode: wgpu::PolygonMode::Fill,
+                clamp_depth: false,
+                conservative: false,
+            },
+            depth_stencil: None,
+            multisample: wgpu::MultisampleState {
+                count: 1,
+                mask: !0,
+                alpha_to_coverage_enabled: false,
+            },
+        });
 
         // Setup vertex buffers
         let data = vec![0; 1_000_000];
@@ -451,8 +502,9 @@ impl WgpuBackend {
             texture_bind_groups: Vec::new(),
             images: Vec::new(),
 
-            text_texture,
+            text_render_pipeline,
             text_vertex_buffer,
+            text_texture,
             text_bind_group,
             glyph_brush,
             has_text: false,
@@ -679,8 +731,9 @@ impl WgpuBackend {
         }
 
         if self.has_text {
-            render_pass.set_vertex_buffer(0, self.text_vertex_buffer.slice(..));
+            render_pass.set_pipeline(&self.text_render_pipeline);
             render_pass.set_bind_group(1, &self.text_bind_group, &[]);
+            render_pass.set_vertex_buffer(0, self.text_vertex_buffer.slice(..));
 
             let queue = &self.queue;
             let text_texture = &self.text_texture;
@@ -725,7 +778,11 @@ impl WgpuBackend {
                         quad_vertex.into_vertices(&mut vertices);
                     }
                     self.last_text_vertices_count = vertices.len() as u32;
-                    queue.write_buffer(&self.text_vertex_buffer, 0, bytemuck::cast_slice(&vertices));
+                    queue.write_buffer(
+                        &self.text_vertex_buffer,
+                        0,
+                        bytemuck::cast_slice(&vertices),
+                    );
 
                     render_pass.draw(0..self.last_text_vertices_count, 0..1);
                 }
