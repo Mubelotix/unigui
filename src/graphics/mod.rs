@@ -82,12 +82,11 @@ impl TextVertex {
             bounds: _,
             extra,
         }: glyph_brush::GlyphVertex,
-        screen_size: (u32, u32),
     ) -> Self {
         TextVertex {
             position: Rect {
-                min: screen_coords_to_wgpu((pixel_coords.min.x, pixel_coords.min.y), screen_size),
-                max: screen_coords_to_wgpu((pixel_coords.max.x, pixel_coords.max.y), screen_size),
+                min: (pixel_coords.min.x, pixel_coords.min.y),
+                max: (pixel_coords.max.x, pixel_coords.max.y),
             },
             tex_coords: Rect {
                 min: (tex_coords.min.x, tex_coords.min.y),
@@ -383,10 +382,10 @@ impl WgpuBackend {
                 push_constant_ranges: &[],
             });
 
-        let text_vs_module = device
-            .create_shader_module(&wgpu::include_spirv!("ressources/text-shader.vert.spv"));
-        let text_fs_module = device
-            .create_shader_module(&wgpu::include_spirv!("ressources/text-shader.frag.spv"));
+        let text_vs_module =
+            device.create_shader_module(&wgpu::include_spirv!("ressources/text-shader.vert.spv"));
+        let text_fs_module =
+            device.create_shader_module(&wgpu::include_spirv!("ressources/text-shader.frag.spv"));
 
         let text_render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Text Render Pipeline"),
@@ -737,7 +736,6 @@ impl WgpuBackend {
 
             let queue = &self.queue;
             let text_texture = &self.text_texture;
-            let screen_size = (self.size.width, self.size.height);
 
             let update_texture = |rect: glyph_brush::Rectangle<u32>, tex_data: &[u8]| {
                 let width = rect.max[0] - rect.min[0];
@@ -769,7 +767,7 @@ impl WgpuBackend {
 
             match self.glyph_brush.process_queued(
                 |rect, tex_data| update_texture(rect, tex_data),
-                |vertex| TextVertex::from_glyph_vertex(vertex, screen_size),
+                TextVertex::from_glyph_vertex,
             ) {
                 Ok(glyph_brush::BrushAction::Draw(quad_vertices)) => {
                     let mut vertices = Vec::new();
