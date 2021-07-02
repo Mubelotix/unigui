@@ -564,57 +564,98 @@ impl WgpuBackend {
 
         // Update text rendering data
         if self.has_text {
-            let queue = &self.queue;
-            let text_texture = &self.text_texture;
+            loop {
+                let queue = &self.queue;
+                let text_texture = &self.text_texture;
 
-            let update_texture = |rect: glyph_brush::Rectangle<u32>, tex_data: &[u8]| {
-                let width = rect.max[0] - rect.min[0];
-                let height = rect.max[1] - rect.min[1];
+                let update_texture = |rect: glyph_brush::Rectangle<u32>, tex_data: &[u8]| {
+                    let width = rect.max[0] - rect.min[0];
+                    let height = rect.max[1] - rect.min[1];
 
-                queue.write_texture(
-                    wgpu::ImageCopyTexture {
-                        texture: text_texture,
-                        mip_level: 0,
-                        origin: wgpu::Origin3d {
-                            x: rect.min[0],
-                            y: rect.min[1],
-                            z: 0,
+                    queue.write_texture(
+                        wgpu::ImageCopyTexture {
+                            texture: text_texture,
+                            mip_level: 0,
+                            origin: wgpu::Origin3d {
+                                x: rect.min[0],
+                                y: rect.min[1],
+                                z: 0,
+                            },
                         },
-                    },
-                    &tex_data,
-                    wgpu::ImageDataLayout {
-                        offset: 0,
-                        bytes_per_row: std::num::NonZeroU32::new(width),
-                        rows_per_image: std::num::NonZeroU32::new(height),
-                    },
-                    wgpu::Extent3d {
-                        width,
-                        height,
-                        depth_or_array_layers: 1,
-                    },
-                );
-            };
-
-            match self.glyph_brush.process_queued(
-                |rect, tex_data| update_texture(rect, tex_data),
-                TextVertex::from_glyph_vertex,
-            ) {
-                Ok(glyph_brush::BrushAction::Draw(quad_vertices)) => {
-                    let mut vertices = Vec::new();
-
-                    for quad_vertex in quad_vertices {
-                        quad_vertex.into_vertices(&mut vertices);
-                    }
-                    self.last_text_vertices_count = vertices.len() as u32;
-                    queue.write_buffer(
-                        &self.text_vertex_buffer,
-                        0,
-                        bytemuck::cast_slice(&vertices),
+                        &tex_data,
+                        wgpu::ImageDataLayout {
+                            offset: 0,
+                            bytes_per_row: std::num::NonZeroU32::new(width),
+                            rows_per_image: std::num::NonZeroU32::new(height),
+                        },
+                        wgpu::Extent3d {
+                            width,
+                            height,
+                            depth_or_array_layers: 1,
+                        },
                     );
-                }
-                Ok(glyph_brush::BrushAction::ReDraw) => {}
-                Err(glyph_brush::BrushError::TextureTooSmall { suggested }) => {
-                    todo!()
+                };
+
+                match self.glyph_brush.process_queued(
+                    |rect, tex_data| update_texture(rect, tex_data),
+                    TextVertex::from_glyph_vertex,
+                ) {
+                    Ok(glyph_brush::BrushAction::Draw(quad_vertices)) => {
+                        let mut vertices = Vec::new();
+
+                        for quad_vertex in quad_vertices {
+                            quad_vertex.into_vertices(&mut vertices);
+                        }
+                        self.last_text_vertices_count = vertices.len() as u32;
+                        queue.write_buffer(
+                            &self.text_vertex_buffer,
+                            0,
+                            bytemuck::cast_slice(&vertices),
+                        );
+                        break;
+                    }
+                    Ok(glyph_brush::BrushAction::ReDraw) => {
+                        break;
+                    }
+                    Err(glyph_brush::BrushError::TextureTooSmall { suggested }) => {
+                        let text_texture_size = wgpu::Extent3d {
+                            width: suggested.0,
+                            height: suggested.1,
+                            depth_or_array_layers: 1,
+                        };
+
+                        self.text_texture = self.device.create_texture(&wgpu::TextureDescriptor {
+                            size: text_texture_size,
+                            mip_level_count: 1,
+                            sample_count: 1,
+                            dimension: wgpu::TextureDimension::D2,
+                            format: wgpu::TextureFormat::R8Unorm,
+                            usage: wgpu::TextureUsage::SAMPLED | wgpu::TextureUsage::COPY_DST,
+                            label: Some("Text Texture"),
+                        });
+
+                        let text_view = self
+                            .text_texture
+                            .create_view(&wgpu::TextureViewDescriptor::default());
+
+                        self.text_bind_group =
+                            self.device.create_bind_group(&wgpu::BindGroupDescriptor {
+                                layout: &self.texture_bind_group_layout,
+                                entries: &[
+                                    wgpu::BindGroupEntry {
+                                        binding: 0,
+                                        resource: wgpu::BindingResource::TextureView(&text_view),
+                                    },
+                                    wgpu::BindGroupEntry {
+                                        binding: 1,
+                                        resource: wgpu::BindingResource::Sampler(
+                                            &self.texture_sampler,
+                                        ),
+                                    },
+                                ],
+                                label: Some("texture_bind_group"),
+                            });
+                    }
                 }
             }
         }
