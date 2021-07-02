@@ -154,7 +154,6 @@ pub struct WgpuBackend {
 
     glyph_brush: glyph_brush::GlyphBrush<TextVertex>,
     text_texture: wgpu::Texture,
-    text_texture_size: wgpu::Extent3d,
     text_bind_group: wgpu::BindGroup,
     text_vertex_buffer: wgpu::Buffer,
     last_text_vertices_count: u32,
@@ -457,7 +456,6 @@ impl WgpuBackend {
             text_bind_group,
             glyph_brush,
             has_text: false,
-            text_texture_size,
             last_text_vertices_count: 0,
 
             uniforms,
