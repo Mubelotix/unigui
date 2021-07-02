@@ -7,5 +7,6 @@ layout(set = 1, binding = 0) uniform texture2D t_diffuse;
 layout(set = 1, binding = 1) uniform sampler s_diffuse;
 
 void main() {
-    f_color = texture(sampler2D(t_diffuse, s_diffuse), v_tex_coords);
+    vec4 p_color = texture(sampler2D(t_diffuse, s_diffuse), v_tex_coords);
+    f_color = vec4(0.0, 0.0, 0.0, p_color.r);
 }
