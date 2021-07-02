@@ -59,12 +59,6 @@ impl fgui::Widget for App {
                 .add_image(Rect::sized(500.0, 0.0, 100.0, 100.0), texture_id)
         }
 
-        surface
-            .backend
-            .add_text(glyph_brush::Section::default().add_text(
-                glyph_brush::Text::new("The last word was ").with_color([0.0, 0.0, 1.0, 1.0]),
-            ));
-
         self.div.render(surface);
     }
 }
