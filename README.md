@@ -62,11 +62,19 @@ TODO
 
 ## Goals
 
-TODO
+Goals in common with most alternatives:
+- Simple and easy to use
+- Responsive and fast
+- Portable (based on wgpu)
+
+Goals in opposition with most alternatives:
+- Provide low level tools
+- Allow users to define their own containers, so that they can positionate widgets as they wish
 
 ## Non-goals
 
-TODO
+- Built-in widgets: we have libraries for that, UniGUI is just the core of the modular ecosystem
+- No-unsafe fanatism: we will use unsafe to speed up things wherever possible, as long as we can prove it is actually safe
 
 ## Alternatives
 
