@@ -159,3 +159,8 @@ fn main() {
     env_logger::init();
     run(App::new())
 }
+
+#[test]
+fn test() {
+    main()
+}

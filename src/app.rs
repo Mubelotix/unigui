@@ -9,10 +9,23 @@ pub fn run<App: crate::app::App + 'static>(mut app: App) -> ! {
         window::WindowBuilder,
     };
 
-    let event_loop = EventLoop::new();
+    let event_loop = if std::thread::current().name() == Some("main") {
+        EventLoop::new()
+    } else {
+        #[cfg(target_family = "unix")]
+        {
+            use winit::platform::unix::EventLoopExtUnix;
+            EventLoop::new_any_thread()
+        }
+        #[cfg(not(target_family = "unix"))]
+        panic!("On a non-unix OS, please run the app on the main thread");
+    };
     let window = WindowBuilder::new().build(&event_loop).unwrap();
 
-    let mut state = futures::executor::block_on(WgpuBackend::new(&window, include_bytes!("graphics/ressources/Inconsolata-Regular.ttf")));
+    let mut state = futures::executor::block_on(WgpuBackend::new(
+        &window,
+        include_bytes!("graphics/ressources/Inconsolata-Regular.ttf"),
+    ));
     let mut window_size = window.inner_size();
 
     event_loop.run(move |event, _, control_flow| match event {
