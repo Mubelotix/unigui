@@ -5,5 +5,5 @@ authors = ["Mubelotix <mubelotix@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-fgui = {path="../../.."}
+unigui = {path="../../.."}
 lyon = "0.17"

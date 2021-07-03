@@ -1,5 +1,5 @@
-use fgui::containers::*;
-use fgui::prelude::*;
+use unigui::containers::*;
+use unigui::prelude::*;
 
 pub struct Rectangle {}
 
@@ -20,7 +20,7 @@ impl Widget for Rectangle {
     }
 
     fn render(&self, surface: Area) {
-        use fgui::graphics::Vertex;
+        use unigui::graphics::Vertex;
 
         surface.backend.add_vertex(Vertex {
             position: [surface.rect.min.0 + 2.0, surface.rect.min.1 + 2.0],
@@ -69,7 +69,7 @@ impl Widget for BigRectangle {
     }
 
     fn render(&self, surface: Area) {
-        use fgui::graphics::Vertex;
+        use unigui::graphics::Vertex;
 
         surface.backend.add_vertex(Vertex {
             position: [surface.rect.min.0 + 2.0, surface.rect.min.1 + 2.0],
@@ -102,11 +102,11 @@ impl Widget for BigRectangle {
 #[derive(Debug)]
 pub struct App {
     should_render: bool,
-    flexbox: fgui::containers::Flexbox,
+    flexbox: unigui::containers::Flexbox,
     offset: f32,
 }
 
-impl fgui::App for App {}
+impl unigui::App for App {}
 
 impl App {
     fn new() -> App {
@@ -137,7 +137,7 @@ impl App {
     }
 }
 
-impl fgui::Widget for App {
+impl unigui::Widget for App {
     fn update(&mut self) {
         self.offset += 0.01;
     }

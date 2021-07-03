@@ -1,4 +1,4 @@
-use fgui::prelude::*;
+use unigui::prelude::*;
 use lyon::path::traits::PathBuilder;
 
 pub struct Button {}
@@ -20,7 +20,7 @@ impl Widget for Button {
     }
 
     fn render(&self, surface: Area) {
-        use fgui::graphics::Vertex;
+        use unigui::graphics::Vertex;
         use lyon::math::{point, size, Point};
         use lyon::path::{builder::BorderRadii, Path, Winding};
         use lyon::tessellation::{geometry_builder::simple_builder, *};

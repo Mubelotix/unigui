@@ -1,5 +1,5 @@
-use fgui::containers::*;
-use fgui::prelude::*;
+use unigui::containers::*;
+use unigui::prelude::*;
 use std::cell::RefCell;
 
 #[path = "unigui-classic/src/lib.rs"]
@@ -9,10 +9,10 @@ use unigui_classic::button::Button;
 #[derive(Debug)]
 pub struct App {
     image_id: RefCell<Option<TextureId>>,
-    div: fgui::containers::Div,
+    div: unigui::containers::Div,
 }
 
-impl fgui::App for App {}
+impl unigui::App for App {}
 
 impl App {
     fn new() -> App {
@@ -30,7 +30,7 @@ impl App {
     }
 }
 
-impl fgui::Widget for App {
+impl unigui::Widget for App {
     fn update(&mut self) {}
 
     fn allocate_area(
