@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="http://example.com/" width="150" />
+  <img src=".github/logo.svg" width="150" title='A french "boule de gui" taking the form of a french "fleur de lys"' alt="UniGUI logo" />
 
   <h1>UniGUI</h1>
 
