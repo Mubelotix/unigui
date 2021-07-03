@@ -30,5 +30,44 @@
   </h4>
 </div>
 
+UniGUI is a flexible GUI library for Rust.  
+It provides a fast HTML-like layout engine, and both low and high level 2D rendering methods.
 
-This repo is not ready to receive any contribution yet. Please come back later!
+Low level tools are believed crucial, since they have been omitted in alternatives which leads to many cases where these libraries are not powerful enough to cover specific needs. UniGUI aims to fill this gap, while also providing higher level tools.
+
+## Features
+
+- Fast HTML-like **layout** engine
+- **Flexboxes**
+- Widget size negociation with container
+- **Responsive** widget positioning
+- [Yew](https://github.com/yewstack/yew)-like **retained mode**, but widgets can update their size and data at any time
+- **Cross platform** rendering (thanks [wgpu](https://github.com/gfx-rs/wgpu)!)
+- **Text rendering** (thanks [glyph_brush](https://github.com/alexheretic/glyph-brush)!)
+- **Image rendering**
+- **Vertex rendering**
+- Shapes rendering via **tesselation** (TODO)
+
+## Example
+
+TODO
+
+## Design
+
+TODO
+
+## Roadmap
+
+- Anti Aliased Tesselation
+
+## Goals
+
+TODO
+
+## Non-goals
+
+TODO
+
+## Alternatives
+
+TODO
